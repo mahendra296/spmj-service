@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title : 'Page not found' %> — SPMG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= typeof page !== 'undefined' ? page : '404' %>">
+  <%- include('header') %>
+
+  <main class="page-hero" style="text-align:center">
+    <div class="container">
+      <span class="eyebrow">Error 404</span>
+      <h1 class="display">Hmm, <span class="grad">that page wandered off</span>.</h1>
+      <p class="lead">The link you followed may be broken, or the page may have been moved.</p>
+      <a href="/" class="btn btn-primary btn-lg">Back to home →</a>
+    </div>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About SPMG — a studio of makers and operators." />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">About SPMG</span>
+        <h1 class="display">We're a studio of <span class="grad">makers</span><br />and operators.</h1>
+        <p class="lead">
+          We started SPMG with a simple belief: the best companies are built when
+          strategy, design, and engineering are inseparable. So we put them all
+          on one team — and got to work.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container two-col">
+        <div>
+          <span class="eyebrow">Our story</span>
+          <h2>From a small idea to a trusted partner.</h2>
+          <p>
+            SPMG was founded by a group of designers, engineers, and operators who'd
+            spent years inside high-growth companies. We saw the same pattern over
+            and over — great ideas slowed down by silos, hand-offs, and process.
+          </p>
+          <p>
+            So we built something different. A small, senior team that works as
+            one — close to the customer, fast on its feet, and obsessed with
+            shipping outcomes, not deliverables.
+          </p>
+        </div>
+        <div class="story-art">
+          <div class="story-card">
+            <strong>2018</strong>
+            <span>SPMG founded by 3 friends in a coworking space.</span>
+          </div>
+          <div class="story-card">
+            <strong>2021</strong>
+            <span>First international client. Team grows to 12.</span>
+          </div>
+          <div class="story-card">
+            <strong>2024</strong>
+            <span>Crossed 100 shipped projects across 4 continents.</span>
+          </div>
+          <div class="story-card">
+            <strong>Today</strong>
+            <span>A close-knit team of 24 across design, engineering, and strategy.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">What we believe</span>
+          <h2>The values that shape our work.</h2>
+        </div>
+        <div class="grid grid-3">
+          <div class="value-card">
+            <h3>Clarity over cleverness</h3>
+            <p>Simple, honest solutions beat clever ones every time. We aim for products that just make sense.</p>
+          </div>
+          <div class="value-card">
+            <h3>Senior craft, end to end</h3>
+            <p>The people who scope your project are the same people building it. No junior hand-offs.</p>
+          </div>
+          <div class="value-card">
+            <h3>Outcomes, not output</h3>
+            <p>We measure ourselves by the impact we create — not the deliverables we produce.</p>
+          </div>
+          <div class="value-card">
+            <h3>Default to transparency</h3>
+            <p>Honest progress, open numbers, and real talk. You'll always know where we stand.</p>
+          </div>
+          <div class="value-card">
+            <h3>Move quickly, carefully</h3>
+            <p>Speed without sloppiness. We ship in weeks, but think in years.</p>
+          </div>
+          <div class="value-card">
+            <h3>Long partnerships</h3>
+            <p>Most of our clients have been with us for years. That's the metric we care about most.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-section">
+      <div class="container cta-card">
+        <div>
+          <h2>Want to work with us?</h2>
+          <p class="lead">We're always open to interesting conversations.</p>
+        </div>
+        <a href="/contact" class="btn btn-primary btn-lg">Say hello →</a>
+      </div>
+    </section>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>

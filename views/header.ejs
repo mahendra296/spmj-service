@@ -1,0 +1,25 @@
+<header class="site-header">
+  <div class="container nav-container">
+    <a href="/" class="brand" aria-label="SPMG home">
+      <span class="brand-mark">SPMG</span>
+      <span class="brand-dot"></span>
+    </a>
+    <nav class="primary-nav" aria-label="Primary">
+      <a href="/" class="<%= page === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/about" class="<%= page === 'about' ? 'active' : '' %>">About</a>
+      <a href="/services" class="<%= page === 'services' ? 'active' : '' %>">Services</a>
+      <a href="/contact" class="<%= page === 'contact' ? 'active' : '' %>">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <% if (user) { %>
+        <a href="/admin/dashboard" class="btn btn-ghost">Dashboard</a>
+      <% } else { %>
+        <a href="/admin/login" class="btn btn-ghost">Admin</a>
+      <% } %>
+      <a href="/contact" class="btn btn-primary">Get in touch</a>
+    </div>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>

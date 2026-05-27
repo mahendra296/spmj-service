@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <header class="admin-header">
+    <div class="container nav-container">
+      <a href="/admin/dashboard" class="brand">
+        <span class="brand-mark">SPMG</span>
+        <span class="brand-dot"></span>
+        <span class="admin-tag">Admin</span>
+      </a>
+      <div class="nav-actions">
+        <span class="muted">Signed in as <strong><%= user.username %></strong></span>
+        <form action="/admin/logout" method="POST" style="display:inline">
+          <button type="submit" class="btn btn-ghost">Sign out</button>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  <main class="container admin-main">
+    <div class="section-head">
+      <span class="eyebrow">Dashboard</span>
+      <h1>Welcome back, <%= user.username %>.</h1>
+    </div>
+
+    <div class="grid grid-4 stats-row">
+      <div class="stat-card"><strong>1,284</strong><span>Visitors this week</span></div>
+      <div class="stat-card"><strong>32</strong><span>New leads</span></div>
+      <div class="stat-card"><strong>8</strong><span>Open projects</span></div>
+      <div class="stat-card"><strong>$48k</strong><span>Pipeline value</span></div>
+    </div>
+
+    <div class="admin-panel">
+      <h3>Recent contact messages</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Message</th><th>Received</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Jane Cooper</td><td>jane@northwind.example</td><td>Interested in the Build engagement…</td><td>2h ago</td></tr>
+          <tr><td>Daniel Rios</td><td>daniel@helios.example</td><td>Following up on our intro call…</td><td>5h ago</td></tr>
+          <tr><td>Lina Sato</td><td>lina@fern.example</td><td>Need help scaling our backend…</td><td>1d ago</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="/script.js"></script>
+</body>
+</html>

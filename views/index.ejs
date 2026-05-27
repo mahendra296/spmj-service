@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SPMG — strategy, design, and engineering for ambitious businesses." />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="slider" aria-roledescription="carousel" aria-label="Featured highlights">
+      <div class="slides">
+        <div class="slide is-active" style="background-image: url('/images/slide-1.svg')">
+          <div class="container slide-content">
+            <span class="eyebrow">Strategy · Design · Engineering</span>
+            <h1 class="display">Building the <span class="grad">future</span> of business.</h1>
+            <p class="lead">We partner with founders and teams to design, build, and scale products that people love.</p>
+          </div>
+        </div>
+        <div class="slide" style="background-image: url('/images/slide-2.svg')">
+          <div class="container slide-content">
+            <span class="eyebrow">Product Design</span>
+            <h1 class="display">Crafted with <span class="grad">precision</span>.</h1>
+            <p class="lead">Beautiful, intuitive interfaces designed to turn complex ideas into delightful experiences.</p>
+          </div>
+        </div>
+        <div class="slide" style="background-image: url('/images/slide-3.svg')">
+          <div class="container slide-content">
+            <span class="eyebrow">Engineering Excellence</span>
+            <h1 class="display">Scalable. Secure. <span class="grad">Reliable.</span></h1>
+            <p class="lead">Production-grade software built by senior engineers — ready for whatever comes next.</p>
+          </div>
+        </div>
+      </div>
+      <button class="slider-arrow prev" aria-label="Previous slide">&#8249;</button>
+      <button class="slider-arrow next" aria-label="Next slide">&#8250;</button>
+      <div class="slider-dots" role="tablist" aria-label="Slide navigation"></div>
+      <div class="slider-progress"><span class="bar"></span></div>
+    </section>
+
+    <section class="section logos">
+      <div class="container">
+        <p class="logos-label">Trusted by teams at</p>
+        <div class="logos-row">
+          <span>Northwind</span>
+          <span>Orbital</span>
+          <span>Helios</span>
+          <span>Atlas&Co</span>
+          <span>Fern</span>
+          <span>Quill</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">What we do</span>
+          <h2>Everything you need to grow,<br />under one roof.</h2>
+        </div>
+        <div class="grid grid-3">
+          <% services.slice(0,6).forEach((s) => { %>
+            <article class="service-card">
+              <div class="service-icon">
+                <% if (s.icon === 'spark') { %>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v6m0 8v6m10-10h-6M8 12H2m15.07-7.07-4.24 4.24M9.17 14.83l-4.24 4.24m0-14.14 4.24 4.24m5.66 5.66 4.24 4.24" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <% } else if (s.icon === 'layers') { %>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5m-18 4 9 5 9-5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/></svg>
+                <% } else if (s.icon === 'code') { %>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m8 8-4 4 4 4m8-8 4 4-4 4M14 4l-4 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                <% } else if (s.icon === 'chart') { %>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20V8m6 12V4m6 16v-9m6 9V12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <% } else if (s.icon === 'cloud') { %>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 18a5 5 0 1 1 .9-9.92A6 6 0 0 1 19 11a4 4 0 0 1-1 7.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                <% } else if (s.icon === 'shield') { %>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6l-8-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                <% } %>
+              </div>
+              <h3><%= s.title %></h3>
+              <p><%= s.description %></p>
+              <a href="/services" class="link-arrow">Learn more →</a>
+            </article>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container two-col">
+        <div>
+          <span class="eyebrow">Why SPMG</span>
+          <h2>A small team. Big outcomes.</h2>
+          <p class="lead">
+            We work shoulder-to-shoulder with your team — bringing senior craft,
+            fast iteration, and a relentless focus on the outcomes that matter.
+          </p>
+          <ul class="checklist">
+            <li>Senior people doing the actual work — no hand-offs.</li>
+            <li>Rapid, transparent delivery on weekly cycles.</li>
+            <li>Honest pricing with no surprises or hidden retainers.</li>
+            <li>Long-term partnerships, not one-off projects.</li>
+          </ul>
+          <a href="/about" class="btn btn-primary">More about us</a>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><strong>98%</strong><span>Client retention</span></div>
+          <div class="stat-card"><strong>4.9★</strong><span>Average review</span></div>
+          <div class="stat-card"><strong>3 wks</strong><span>Avg. time to launch</span></div>
+          <div class="stat-card"><strong>24/7</strong><span>Support</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Kind words</span>
+          <h2>What our clients say.</h2>
+        </div>
+        <div class="grid grid-3">
+          <blockquote class="testimonial">
+            <p>"SPMG took our half-baked idea and turned it into a product our customers genuinely love. Best decision we made this year."</p>
+            <footer><strong>Priya M.</strong> · CEO, Northwind</footer>
+          </blockquote>
+          <blockquote class="testimonial">
+            <p>"From day one they felt like part of our team. Fast, thoughtful, and incredibly easy to work with."</p>
+            <footer><strong>Daniel R.</strong> · Head of Product, Helios</footer>
+          </blockquote>
+          <blockquote class="testimonial">
+            <p>"Senior craft from end-to-end. They sweat the details so we don't have to."</p>
+            <footer><strong>Lina S.</strong> · Founder, Fern</footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-section">
+      <div class="container cta-card">
+        <div>
+          <h2>Got a project in mind?</h2>
+          <p class="lead">Tell us what you're building — we'll get back within one business day.</p>
+        </div>
+        <a href="/contact" class="btn btn-primary btn-lg">Start a conversation →</a>
+      </div>
+    </section>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>
