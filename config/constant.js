@@ -10,3 +10,9 @@ export const SESSION_MAX_AGE =
 
 // Slider auto-advance interval (used in client script)
 export const SLIDER_INTERVAL_MS = 5000;
+
+// Role-based access control
+export const ROLES = {
+  ADMIN: "ROLE_ADMIN",
+  USER: "ROLE_USER",
+};

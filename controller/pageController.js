@@ -1,50 +1,50 @@
 import logger from "../utils/logger.js";
 
-const services = [
+const programs = [
   {
     icon: "spark",
-    title: "Strategy & Consulting",
+    title: "Free Foundational Schooling",
     description:
-      "Tailored business strategies that align with your vision and unlock measurable growth.",
+      "Free, quality schooling for children from underserved communities — books, uniforms, and a safe place to learn and grow.",
   },
   {
     icon: "layers",
-    title: "Product Design",
+    title: "After-School Learning Centres",
     description:
-      "Beautifully crafted interfaces that turn complex ideas into intuitive user experiences.",
+      "Daily homework help, remedial classes, and community libraries that keep first-generation learners on track.",
   },
   {
     icon: "code",
-    title: "Software Engineering",
+    title: "Digital & STEM Labs",
     description:
-      "Scalable, secure, and performant systems built with modern technologies and best practices.",
+      "Hands-on computer literacy, coding, and science activities that prepare every student for a digital world.",
   },
   {
     icon: "chart",
-    title: "Data & Analytics",
+    title: "Scholarships & Mentoring",
     description:
-      "Turn raw data into actionable insight with dashboards, reporting, and predictive models.",
+      "Need-based scholarships, tutoring, and one-to-one mentorship that help students stay in school and reach higher education.",
   },
   {
     icon: "cloud",
-    title: "Cloud Infrastructure",
+    title: "Teacher & Volunteer Training",
     description:
-      "Cloud-native architecture, DevOps automation, and infrastructure that grows with you.",
+      "Training, lesson resources, and ongoing support for community teachers and volunteers so good teaching reaches every classroom.",
   },
   {
     icon: "shield",
-    title: "Security & Compliance",
+    title: "Child Welfare & Nutrition",
     description:
-      "Protect your business with proactive security audits, monitoring, and compliance support.",
+      "Nutritious meals, regular health check-ups, and child-safe spaces — because no child should ever learn on an empty stomach.",
   },
 ];
 
 export const getHomePage = async (req, res) => {
   try {
     return res.render("index", {
-      title: "SPMG — Building the future of business",
+      title: "SPMJ Foundation — Education for every child",
       page: "home",
-      services,
+      programs,
     });
   } catch (error) {
     logger.logError(error, req);
@@ -55,7 +55,7 @@ export const getHomePage = async (req, res) => {
 export const getAboutPage = async (req, res) => {
   try {
     return res.render("about", {
-      title: "About — SPMG",
+      title: "About — SPMJ Foundation",
       page: "about",
     });
   } catch (error) {
@@ -67,9 +67,9 @@ export const getAboutPage = async (req, res) => {
 export const getServicesPage = async (req, res) => {
   try {
     return res.render("services", {
-      title: "Services — SPMG",
+      title: "Programs — SPMJ Foundation",
       page: "services",
-      services,
+      programs,
     });
   } catch (error) {
     logger.logError(error, req);

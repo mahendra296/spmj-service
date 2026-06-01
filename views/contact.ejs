@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Contact SPMG." />
+  <meta name="description" content="Contact SPMJ Foundation — donate, volunteer, or partner with us to bring education to every child." />
   <title><%= title %></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
         <span class="eyebrow">Contact</span>
         <h1 class="display">Let's <span class="grad">talk</span>.</h1>
         <p class="lead">
-          Have a project in mind, a question, or just want to say hi? We'd love to hear from you.
+          Want to donate, volunteer, partner with us, or simply learn more? We'd love to hear from you.
         </p>
       </div>
     </section>
@@ -28,23 +28,23 @@
       <div class="container two-col contact-wrap">
         <div class="contact-info">
           <h3>Reach us directly</h3>
-          <p class="muted">We typically reply within one business day.</p>
+          <p class="muted">We typically reply within two working days.</p>
           <ul class="contact-list">
             <li>
               <span class="contact-label">Email</span>
-              <a href="mailto:hello@spmg.example">hello@spmg.example</a>
+              <a href="mailto:hello@spmjfoundation.org">hello@spmjfoundation.org</a>
             </li>
             <li>
               <span class="contact-label">Phone</span>
-              <a href="tel:+15551234567">+1 (555) 123-4567</a>
+              <a href="tel:+911123456789">+91 11 2345 6789</a>
             </li>
             <li>
               <span class="contact-label">Office</span>
-              <span>221B Maker Street, Suite 4<br />San Francisco, CA</span>
+              <span>SPMJ Foundation, 12 Vidya Marg<br />New Delhi 110001, India</span>
             </li>
             <li>
               <span class="contact-label">Hours</span>
-              <span>Mon — Fri · 9am – 6pm PT</span>
+              <span>Mon — Sat · 10am – 6pm IST</span>
             </li>
           </ul>
         </div>
@@ -52,8 +52,8 @@
         <div class="contact-form-wrap">
           <% if (sent) { %>
             <div class="alert success">
-              <strong>Thanks — message received!</strong>
-              <p>We'll be in touch within one business day.</p>
+              <strong>Thank you — message received!</strong>
+              <p>Our team will be in touch within two working days.</p>
             </div>
           <% } %>
           <form action="/contact" method="POST" class="contact-form" novalidate>
@@ -65,13 +65,13 @@
             </div>
             <div class="form-row">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="you@company.com"
+              <input type="email" id="email" name="email" placeholder="you@example.com"
                 value="<%= (values && values.email) || '' %>" required />
               <% if (errors && errors.email) { %><span class="error"><%= errors.email %></span><% } %>
             </div>
             <div class="form-row">
-              <label for="message">Tell us about your project</label>
-              <textarea id="message" name="message" rows="6" placeholder="A few sentences about what you're building, your goals, and any timeline." required><%= (values && values.message) || '' %></textarea>
+              <label for="message">How would you like to help?</label>
+              <textarea id="message" name="message" rows="6" placeholder="Let us know if you'd like to donate, volunteer, partner with us, or simply learn more." required><%= (values && values.message) || '' %></textarea>
               <% if (errors && errors.message) { %><span class="error"><%= errors.message %></span><% } %>
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Send message →</button>

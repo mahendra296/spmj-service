@@ -13,12 +13,12 @@
   <header class="admin-header">
     <div class="container nav-container">
       <a href="/admin/dashboard" class="brand">
-        <span class="brand-mark">SPMG</span>
+        <span class="brand-mark">SPMJ</span>
         <span class="brand-dot"></span>
         <span class="admin-tag">Admin</span>
       </a>
       <div class="nav-actions">
-        <span class="muted">Signed in as <strong><%= user.username %></strong></span>
+        <span class="muted">Signed in as <strong><%= user.name %></strong> · <%= user.role %></span>
         <form action="/admin/logout" method="POST" style="display:inline">
           <button type="submit" class="btn btn-ghost">Sign out</button>
         </form>
@@ -29,14 +29,14 @@
   <main class="container admin-main">
     <div class="section-head">
       <span class="eyebrow">Dashboard</span>
-      <h1>Welcome back, <%= user.username %>.</h1>
+      <h1>Welcome back, <%= user.name %>.</h1>
     </div>
 
     <div class="grid grid-4 stats-row">
       <div class="stat-card"><strong>1,284</strong><span>Visitors this week</span></div>
-      <div class="stat-card"><strong>32</strong><span>New leads</span></div>
-      <div class="stat-card"><strong>8</strong><span>Open projects</span></div>
-      <div class="stat-card"><strong>$48k</strong><span>Pipeline value</span></div>
+      <div class="stat-card"><strong>32</strong><span>New enquiries</span></div>
+      <div class="stat-card"><strong>148</strong><span>Active sponsorships</span></div>
+      <div class="stat-card"><strong>₹3.6L</strong><span>Donations this month</span></div>
     </div>
 
     <div class="admin-panel">
@@ -46,9 +46,9 @@
           <tr><th>Name</th><th>Email</th><th>Message</th><th>Received</th></tr>
         </thead>
         <tbody>
-          <tr><td>Jane Cooper</td><td>jane@northwind.example</td><td>Interested in the Build engagement…</td><td>2h ago</td></tr>
-          <tr><td>Daniel Rios</td><td>daniel@helios.example</td><td>Following up on our intro call…</td><td>5h ago</td></tr>
-          <tr><td>Lina Sato</td><td>lina@fern.example</td><td>Need help scaling our backend…</td><td>1d ago</td></tr>
+          <tr><td>Aarti Sharma</td><td>aarti@example.com</td><td>I'd like to sponsor a child this year…</td><td>2h ago</td></tr>
+          <tr><td>Rahul Mehta</td><td>rahul@example.com</td><td>Can our company volunteer at a centre?…</td><td>5h ago</td></tr>
+          <tr><td>Sneha Iyer</td><td>sneha@example.com</td><td>Question about monthly donations…</td><td>1d ago</td></tr>
         </tbody>
       </table>
     </div>

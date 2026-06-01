@@ -5,7 +5,7 @@ export const getContactPage = async (req, res) => {
   try {
     const successMessages = req.flash("success");
     return res.render("contact", {
-      title: "Contact — SPMG",
+      title: "Contact — SPMJ Foundation",
       page: "contact",
       sent: successMessages.length > 0,
       errors: null,
@@ -30,7 +30,7 @@ export const submitContact = async (req, res) => {
       }
     }
     return res.status(400).render("contact", {
-      title: "Contact — SPMG",
+      title: "Contact — SPMJ Foundation",
       page: "contact",
       sent: false,
       errors,
@@ -39,6 +39,6 @@ export const submitContact = async (req, res) => {
   }
 
   logger.info("Contact form submission", validation.data);
-  req.flash("success", "Thanks — we'll be in touch within one business day.");
+  req.flash("success", "Thank you for reaching out — our team will get back to you within two working days.");
   return res.redirect("/contact");
 };

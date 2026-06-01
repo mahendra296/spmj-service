@@ -2,7 +2,7 @@ import morgan from "morgan";
 import logger from "../utils/logger.js";
 
 morgan.token("client-ip", (req) => req.clientIp || req.ip);
-morgan.token("user-id", (req) => (req.session?.admin?.username ? req.session.admin.username : "anonymous"));
+morgan.token("user-id", (req) => req.session?.user?.email || "anonymous");
 morgan.token("response-time-ms", (req, res) => {
   if (!req._startAt || !res._startAt) {
     return "-";

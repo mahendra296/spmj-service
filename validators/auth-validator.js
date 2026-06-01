@@ -1,10 +1,12 @@
 import { z } from "zod";
 
 export const adminLoginSchema = z.object({
-  username: z
-    .string({ required_error: "Username is required" })
-    .min(1, "Username is required")
-    .trim(),
+  email: z
+    .string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Enter a valid email address")
+    .trim()
+    .toLowerCase(),
 
   password: z
     .string({ required_error: "Password is required" })

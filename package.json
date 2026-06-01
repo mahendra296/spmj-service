@@ -1,28 +1,39 @@
 {
-  "name": "spmg-website",
+  "name": "spmj-foundation-website",
   "version": "1.0.0",
-  "description": "spmg company website",
+  "description": "SPMJ Foundation — educational non-profit website",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --env-file=.env --watch index.js",
     "dev": "node --env-file=.env --watch index.js",
-    "debug": "node --env-file=.env --inspect index.js"
+    "debug": "node --env-file=.env --inspect index.js",
+    "db:generate": "node --env-file=.env node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "node --env-file=.env node_modules/drizzle-kit/bin.cjs migrate",
+    "db:push": "node --env-file=.env node_modules/drizzle-kit/bin.cjs push",
+    "db:studio": "node --env-file=.env node_modules/drizzle-kit/bin.cjs studio",
+    "db:seed": "node --env-file=.env drizzle/seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "argon2": "^0.44.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
+    "drizzle-orm": "^0.45.1",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
     "express-session": "^1.18.2",
     "morgan": "^1.10.1",
+    "postgres": "^3.4.5",
     "prom-client": "^15.1.3",
     "request-ip": "^3.3.0",
     "winston": "^3.19.0",
     "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.8"
   }
 }
