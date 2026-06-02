@@ -1,0 +1,55 @@
+<%- include('../head', { title, active: 'blog' }) %>
+
+    <div class="admin-list-head">
+      <div>
+        <span class="eyebrow">Blog &amp; News</span>
+        <h1>Manage posts</h1>
+      </div>
+      <a href="/admin/blog/new" class="btn btn-primary">+ New post</a>
+    </div>
+
+    <div class="admin-panel">
+      <% if (posts.length === 0) { %>
+        <p class="muted">No posts yet. <a href="/admin/blog/new" class="link-arrow">Write the first one →</a></p>
+      <% } else { %>
+        <div class="table-scroll">
+          <table class="data-table data-table-rich">
+            <thead>
+              <tr>
+                <th class="col-thumb"></th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Published</th>
+                <th>Status</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% posts.forEach((p) => { %>
+                <tr>
+                  <td class="col-thumb">
+                    <% if (p.coverImage) { %>
+                      <img class="table-thumb" src="<%= p.coverImage %>" alt="" loading="lazy" />
+                    <% } else { %>
+                      <span class="table-thumb placeholder"><%= p.title.charAt(0).toUpperCase() %></span>
+                    <% } %>
+                  </td>
+                  <td><a class="table-title" href="/blog/<%= p.slug %>" target="_blank" rel="noopener"><%= p.title %></a></td>
+                  <td><span class="badge badge-<%= p.category %>"><%= p.category %></span></td>
+                  <td class="nowrap"><%= new Date(p.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                  <td>
+                    <% if (p.published) { %><span class="badge badge-upcoming">Live</span>
+                    <% } else { %><span class="badge badge-draft">Draft</span><% } %>
+                  </td>
+                  <td class="col-actions">
+                    <%- include('../partials/row-actions', { editUrl: `/admin/blog/${p.id}/edit`, deleteUrl: `/admin/blog/${p.id}/delete`, confirmMsg: 'Delete this post?' }) %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+<%- include('../foot') %>

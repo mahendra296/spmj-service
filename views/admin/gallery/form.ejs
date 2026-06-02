@@ -1,0 +1,71 @@
+<%- include('../head', { title, active: 'gallery' }) %>
+
+  <div class="admin-list-head">
+    <div>
+      <span class="eyebrow">Gallery</span>
+      <h1><%= heading %></h1>
+    </div>
+    <a href="/admin/gallery" class="btn btn-ghost">← Back</a>
+  </div>
+
+  <div class="admin-panel form-panel">
+    <form action="<%= formAction %>" method="POST" enctype="multipart/form-data" class="contact-form">
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label for="title">Title <span class="muted">(optional)</span></label>
+          <input type="text" id="title" name="title" value="<%= item.title || '' %>" />
+          <% if (errors && errors.title) { %><span class="error"><%= errors.title %></span><% } %>
+        </div>
+        <div class="form-row">
+          <label for="mediaType">Media type</label>
+          <select id="mediaType" name="mediaType" required>
+            <option value="image" <%= item.mediaType === 'image' || !item.mediaType ? 'selected' : '' %>>Photo</option>
+            <option value="video" <%= item.mediaType === 'video' ? 'selected' : '' %>>Video</option>
+          </select>
+          <% if (errors && errors.mediaType) { %><span class="error"><%= errors.mediaType %></span><% } %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="caption">Caption <span class="muted">(optional)</span></label>
+        <input type="text" id="caption" name="caption" value="<%= item.caption || '' %>" maxlength="500" />
+        <% if (errors && errors.caption) { %><span class="error"><%= errors.caption %></span><% } %>
+      </div>
+
+      <div class="form-row">
+        <label for="mediaFile">Upload file <span class="muted">(photo or video, max 50MB)</span></label>
+        <input type="file" id="mediaFile" name="mediaFile" accept="image/*,video/*" />
+        <input type="hidden" name="existingMedia" value="<%= item.mediaUrl || '' %>" />
+        <% if (item.mediaUrl) { %>
+          <div class="form-preview">
+            <% if (item.mediaType === 'video' && item.mediaUrl.startsWith('/uploads/')) { %>
+              <video src="<%= item.mediaUrl %>" preload="metadata" muted></video>
+            <% } else if (item.mediaUrl.startsWith('/uploads/')) { %>
+              <img src="<%= item.mediaUrl %>" alt="Current media" />
+            <% } %>
+            <span class="muted">Current media is kept unless you upload a new file or enter a URL.</span>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="form-row">
+        <label for="mediaUrl">…or paste a media URL <span class="muted">(e.g. a YouTube link for video)</span></label>
+        <input type="url" id="mediaUrl" name="mediaUrl" value="<%= (item.mediaUrl && !item.mediaUrl.startsWith('/uploads/')) ? item.mediaUrl : '' %>" placeholder="https://…" />
+        <% if (errors && errors.mediaUrl) { %><span class="error"><%= errors.mediaUrl %></span><% } %>
+      </div>
+
+      <div class="form-row">
+        <label for="eventId">Link to event <span class="muted">(optional)</span></label>
+        <select id="eventId" name="eventId">
+          <option value="">— None —</option>
+          <% events.forEach((ev) => { %>
+            <option value="<%= ev.id %>" <%= String(item.eventId) === String(ev.id) ? 'selected' : '' %>><%= ev.title %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg">Save media</button>
+    </form>
+  </div>
+
+<%- include('../foot') %>

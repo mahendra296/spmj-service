@@ -1,0 +1,60 @@
+<%- include('../head', { title, active: 'gallery' }) %>
+
+    <div class="admin-list-head">
+      <div>
+        <span class="eyebrow">Gallery</span>
+        <h1>Manage media</h1>
+      </div>
+      <a href="/admin/gallery/new" class="btn btn-primary">+ Add media</a>
+    </div>
+
+    <div class="admin-panel">
+      <% if (items.length === 0) { %>
+        <p class="muted">No media yet. <a href="/admin/gallery/new" class="link-arrow">Add the first photo or video →</a></p>
+      <% } else { %>
+        <div class="table-scroll">
+          <table class="data-table data-table-rich">
+            <thead>
+              <tr>
+                <th class="col-thumb"></th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Linked event</th>
+                <th>Added</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% items.forEach((item) => { %>
+                <% const isFile = item.mediaUrl.startsWith('/uploads/'); %>
+                <tr>
+                  <td class="col-thumb">
+                    <% if (item.mediaType === 'video') { %>
+                      <% if (isFile) { %>
+                        <video class="table-thumb" src="<%= item.mediaUrl %>" preload="metadata" muted></video>
+                      <% } else { %>
+                        <span class="table-thumb placeholder">▶</span>
+                      <% } %>
+                    <% } else { %>
+                      <img class="table-thumb" src="<%= item.mediaUrl %>" alt="" loading="lazy" />
+                    <% } %>
+                  </td>
+                  <td><span class="table-title"><%= item.title || 'Untitled' %></span></td>
+                  <td>
+                    <% if (item.mediaType === 'video') { %><span class="badge badge-press">Video</span>
+                    <% } else { %><span class="badge badge-article">Photo</span><% } %>
+                  </td>
+                  <td><%= item.eventTitle || '—' %></td>
+                  <td class="nowrap"><%= new Date(item.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                  <td class="col-actions">
+                    <%- include('../partials/row-actions', { editUrl: `/admin/gallery/${item.id}/edit`, deleteUrl: `/admin/gallery/${item.id}/delete`, confirmMsg: 'Delete this media?' }) %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+<%- include('../foot') %>

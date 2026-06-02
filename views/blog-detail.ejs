@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="<%= post.excerpt || post.title %>" />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <article class="section article-page">
+      <div class="container article-narrow">
+        <a href="/blog" class="auth-back">← All posts</a>
+        <div class="content-meta" style="margin-top:16px;">
+          <span class="badge badge-<%= post.category %>"><%= post.category %></span>
+          <time datetime="<%= new Date(post.publishedAt).toISOString() %>">
+            <%= new Date(post.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %>
+          </time>
+          <% if (post.author) { %><span>· by <%= post.author %></span><% } %>
+        </div>
+        <h1 class="display" style="font-size:clamp(2rem,4.5vw,3.25rem);margin-top:8px;"><%= post.title %></h1>
+        <% if (post.excerpt) { %><p class="lead"><%= post.excerpt %></p><% } %>
+
+        <% if (post.coverImage) { %>
+          <img class="article-cover" src="<%= post.coverImage %>" alt="<%= post.title %>" />
+        <% } %>
+
+        <div class="article-content">
+          <% post.content.split(/\n\n+/).forEach((para) => { %>
+            <p><%= para %></p>
+          <% }) %>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>

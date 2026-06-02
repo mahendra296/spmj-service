@@ -1,4 +1,5 @@
 import logger from "../utils/logger.js";
+import { getAllGalleryItems } from "../service/gallery-service.js";
 
 const programs = [
   {
@@ -66,10 +67,11 @@ export const getAboutPage = async (req, res) => {
 
 export const getServicesPage = async (req, res) => {
   try {
+    const gallery = await getAllGalleryItems();
     return res.render("services", {
       title: "Programs — SPMJ Foundation",
       page: "services",
-      programs,
+      gallery,
     });
   } catch (error) {
     logger.logError(error, req);

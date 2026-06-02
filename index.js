@@ -6,7 +6,8 @@ import requestIp from "request-ip";
 
 import { pageRouter } from "./routes/page.routes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler.js";
-import { attachUser } from "./middlewares/verify-auth-middleware.js";
+import { verifyAuthToken } from "./middlewares/verify-auth-middleware.js";
+import { loadSessionsIntoCache } from "./service/auth-service.js";
 import logger from "./utils/logger.js";
 import httpLogger from "./middlewares/http-logger.js";
 import metricsMiddleware from "./middlewares/metrics-middleware.js";
@@ -42,6 +43,15 @@ app.use(
 );
 app.use(flash());
 
+// Expose flash messages to all views as `flash.success` / `flash.error`.
+app.use((req, res, next) => {
+  res.locals.flash = {
+    success: req.flash("success"),
+    error: req.flash("error"),
+  };
+  next();
+});
+
 // Get Ip address for user request
 app.use(requestIp.mw());
 
@@ -50,8 +60,9 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Attach signed-in admin to res.locals so views can read it as `user`
-app.use(attachUser);
+// Verify the JWT access/refresh tokens and attach the signed-in user to
+// req.user / res.locals.user (views read it as `user`).
+app.use(verifyAuthToken);
 
 app.set("view engine", "ejs");
 
@@ -61,6 +72,16 @@ const PORT = env.PORT || 3000;
 
 const startServer = async () => {
   try {
+    // Warm the session cache so existing logins survive a restart.
+    try {
+      const count = await loadSessionsIntoCache();
+      logger.info(`Loaded ${count} active session(s) into cache`);
+    } catch (error) {
+      logger.error("Could not load sessions into cache:", {
+        error: error.message,
+      });
+    }
+
     // 404 handler - must be after all other routes
     app.use(notFoundHandler);
 

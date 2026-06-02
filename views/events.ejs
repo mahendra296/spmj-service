@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Upcoming and past events, camps, and programmes from SPMJ Foundation." />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Events</span>
+        <h1 class="display">What's <span class="grad">happening</span>.</h1>
+        <p class="lead">Camps, community days, and milestones — come be part of the journey.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head" style="text-align:left;margin-bottom:32px;">
+          <h2>Upcoming events</h2>
+        </div>
+        <% if (upcoming.length === 0) { %>
+          <p class="muted">No upcoming events right now — check back soon.</p>
+        <% } else { %>
+          <div class="grid grid-3">
+            <% upcoming.forEach((e) => { %>
+              <%- include('partials/event-card', { e }) %>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head" style="text-align:left;margin-bottom:32px;">
+          <h2>Past events</h2>
+        </div>
+        <% if (past.length === 0) { %>
+          <p class="muted">No past events to show yet.</p>
+        <% } else { %>
+          <div class="grid grid-3">
+            <% past.forEach((e) => { %>
+              <%- include('partials/event-card', { e }) %>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>

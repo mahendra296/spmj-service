@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="SPMJ Foundation programs — free schooling, after-school learning, digital and STEM labs, scholarships, and child welfare." />
+  <meta name="description" content="Photos and videos from SPMJ Foundation events, camps, and learning centres." />
   <title><%= title %></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,30 +16,23 @@
   <main>
     <section class="page-hero">
       <div class="container">
-        <span class="eyebrow">Our programs</span>
-        <h1 class="display">Support for <span class="grad">every step</span> of learning.</h1>
-        <p class="lead">
-          From a child's very first day of school to their first job, our programs
-          work together to keep learners in school and help them flourish.
-        </p>
+        <span class="eyebrow">Gallery</span>
+        <h1 class="display">Moments that <span class="grad">matter</span>.</h1>
+        <p class="lead">Photos and videos from our events, camps, and everyday life at the learning centres.</p>
       </div>
     </section>
 
-    <section class="section" id="gallery">
+    <section class="section">
       <div class="container">
-        <div class="section-head">
-          <span class="eyebrow">Gallery</span>
-          <h2>Moments from our programs.</h2>
-          <p class="lead" style="margin:12px auto 0;">Photos and videos from our events, camps, and learning centres.</p>
-        </div>
-        <% if (!gallery || gallery.length === 0) { %>
-          <p class="muted" style="text-align:center;">No photos or videos have been added yet.</p>
+        <% if (items.length === 0) { %>
+          <p class="muted">No photos or videos have been added yet.</p>
         <% } else { %>
           <div class="gallery-grid">
-            <% gallery.forEach((item) => { %>
+            <% items.forEach((item) => { %>
               <figure class="gallery-item">
                 <% if (item.mediaType === 'video') { %>
-                  <% if (item.mediaUrl.startsWith('/uploads/')) { %>
+                  <% const isFile = item.mediaUrl.startsWith('/uploads/'); %>
+                  <% if (isFile) { %>
                     <video controls preload="metadata" src="<%= item.mediaUrl %>"></video>
                   <% } else { %>
                     <div class="gallery-embed">
@@ -63,16 +56,6 @@
             <% }) %>
           </div>
         <% } %>
-      </div>
-    </section>
-
-    <section class="section cta-section">
-      <div class="container cta-card">
-        <div>
-          <h2>Not sure how to help?</h2>
-          <p class="lead">Tell us a little about you — we'll suggest the best way to make a difference.</p>
-        </div>
-        <a href="/contact" class="btn btn-primary btn-lg">Get in touch →</a>
       </div>
     </section>
   </main>

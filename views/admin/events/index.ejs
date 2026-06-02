@@ -1,0 +1,62 @@
+<%- include('../head', { title, active: 'events' }) %>
+
+    <div class="admin-list-head">
+      <div>
+        <span class="eyebrow">Events</span>
+        <h1>Manage events</h1>
+      </div>
+      <a href="/admin/events/new" class="btn btn-primary">+ New event</a>
+    </div>
+
+    <div class="admin-panel">
+      <% if (events.length === 0) { %>
+        <p class="muted">No events yet. <a href="/admin/events/new" class="link-arrow">Create the first one →</a></p>
+      <% } else { %>
+        <div class="table-scroll">
+          <table class="data-table data-table-rich">
+            <thead>
+              <tr>
+                <th class="col-thumb"></th>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% events.forEach((e) => { %>
+                <%
+                  const _now = new Date();
+                  const _ed = new Date(e.eventDate);
+                  const _running = _ed.toDateString() === _now.toDateString();
+                %>
+                <tr>
+                  <td class="col-thumb">
+                    <% if (e.coverImage) { %>
+                      <img class="table-thumb" src="<%= e.coverImage %>" alt="" loading="lazy" />
+                    <% } else { %>
+                      <span class="table-thumb placeholder"><%= e.title.charAt(0).toUpperCase() %></span>
+                    <% } %>
+                  </td>
+                  <td><a class="table-title" href="/events/<%= e.slug %>" target="_blank" rel="noopener"><%= e.title %></a></td>
+                  <td class="nowrap"><%= new Date(e.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                  <td><%= e.location || '—' %></td>
+                  <td>
+                    <% if (!e.published) { %><span class="badge badge-draft">Draft</span>
+                    <% } else if (_running) { %><span class="badge badge-running">Running</span>
+                    <% } else if (_ed >= _now) { %><span class="badge badge-upcoming">Upcoming</span>
+                    <% } else { %><span class="badge badge-past">Past</span><% } %>
+                  </td>
+                  <td class="col-actions">
+                    <%- include('../partials/row-actions', { editUrl: `/admin/events/${e.id}/edit`, deleteUrl: `/admin/events/${e.id}/delete`, confirmMsg: 'Delete this event?' }) %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+<%- include('../foot') %>

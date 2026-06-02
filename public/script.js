@@ -2,16 +2,29 @@
   'use strict';
 
   const toggle = document.querySelector('.nav-toggle');
-  const nav = document.querySelector('.primary-nav');
+  const header = document.querySelector('.site-header');
 
-  if (toggle && nav) {
-    toggle.addEventListener('click', () => {
-      const open = nav.classList.toggle('open');
+  if (toggle && header) {
+    const setOpen = (open) => {
+      header.classList.toggle('nav-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(!header.classList.contains('nav-open'));
     });
+
+    // Close the menu when a link inside it is followed.
+    header.querySelectorAll('.primary-nav a, .nav-actions a').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+
+    // Reset the menu when resizing back up to the desktop layout.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 720) setOpen(false);
+    }, { passive: true });
   }
 
-  const header = document.querySelector('.site-header');
   if (header) {
     const onScroll = () => {
       if (window.scrollY > 8) header.classList.add('scrolled');

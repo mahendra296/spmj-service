@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="admin">
+  <header class="admin-header">
+    <div class="container nav-container">
+      <a href="/admin/dashboard" class="brand">
+        <span class="brand-mark">SPMJ</span>
+        <span class="brand-dot"></span>
+        <span class="admin-tag">Admin</span>
+      </a>
+      <nav class="admin-nav" aria-label="Admin">
+        <a href="/admin/dashboard" class="<%= typeof active !== 'undefined' && active === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+        <a href="/admin/events" class="<%= typeof active !== 'undefined' && active === 'events' ? 'active' : '' %>">Events</a>
+        <a href="/admin/blog" class="<%= typeof active !== 'undefined' && active === 'blog' ? 'active' : '' %>">Blog</a>
+        <a href="/admin/gallery" class="<%= typeof active !== 'undefined' && active === 'gallery' ? 'active' : '' %>">Gallery</a>
+      </nav>
+      <div class="nav-actions">
+        <% if (user) { %><span class="muted">Signed in as <strong><%= user.name %></strong></span><% } %>
+        <form action="/admin/logout" method="POST" style="display:inline">
+          <button type="submit" class="btn btn-ghost">Sign out</button>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  <main class="container admin-main">
+    <% if (flash && flash.success && flash.success.length) { %>
+      <div class="alert success"><%= flash.success[0] %></div>
+    <% } %>
+    <% if (flash && flash.error && flash.error.length) { %>
+      <div class="alert error"><%= flash.error[0] %></div>
+    <% } %>

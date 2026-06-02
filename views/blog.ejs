@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Articles, press coverage, and announcements from SPMJ Foundation." />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Blog &amp; News</span>
+        <h1 class="display">Stories, news &amp; <span class="grad">updates</span>.</h1>
+        <p class="lead">Articles, press coverage, and announcements from across our work.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <% if (posts.length === 0) { %>
+          <p class="muted">No articles published yet — check back soon.</p>
+        <% } else { %>
+          <div class="grid grid-3">
+            <% posts.forEach((p) => { %>
+              <article class="content-card">
+                <a href="/blog/<%= p.slug %>" class="content-media">
+                  <% if (p.coverImage) { %>
+                    <img src="<%= p.coverImage %>" alt="<%= p.title %>" loading="lazy" />
+                  <% } else { %>
+                    <div class="content-media placeholder" aria-hidden="true"><span><%= p.title.charAt(0).toUpperCase() %></span></div>
+                  <% } %>
+                </a>
+                <div class="content-body">
+                  <div class="content-meta">
+                    <span class="badge badge-<%= p.category %>"><%= p.category %></span>
+                    <time datetime="<%= new Date(p.publishedAt).toISOString() %>">
+                      <%= new Date(p.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+                    </time>
+                  </div>
+                  <h3><a href="/blog/<%= p.slug %>"><%= p.title %></a></h3>
+                  <% if (p.excerpt) { %><p><%= p.excerpt %></p><% } %>
+                  <a href="/blog/<%= p.slug %>" class="link-arrow">Read more →</a>
+                </div>
+              </article>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>

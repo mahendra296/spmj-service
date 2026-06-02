@@ -1,0 +1,72 @@
+<%- include('../head', { title, active: 'blog' }) %>
+
+  <% const isPublished = post && (post.published === undefined || post.published === true || post.published === 'on' || post.published === 'true'); %>
+
+  <div class="admin-list-head">
+    <div>
+      <span class="eyebrow">Blog &amp; News</span>
+      <h1><%= heading %></h1>
+    </div>
+    <a href="/admin/blog" class="btn btn-ghost">← Back</a>
+  </div>
+
+  <div class="admin-panel form-panel">
+    <form action="<%= formAction %>" method="POST" enctype="multipart/form-data" class="contact-form">
+      <div class="form-row">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value="<%= post.title || '' %>" required />
+        <% if (errors && errors.title) { %><span class="error"><%= errors.title %></span><% } %>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label for="category">Category</label>
+          <select id="category" name="category" required>
+            <% categories.forEach((c) => { %>
+              <option value="<%= c %>" <%= post.category === c ? 'selected' : '' %>><%= c.charAt(0).toUpperCase() + c.slice(1) %></option>
+            <% }) %>
+          </select>
+          <% if (errors && errors.category) { %><span class="error"><%= errors.category %></span><% } %>
+        </div>
+        <div class="form-row">
+          <label for="author">Author <span class="muted">(optional)</span></label>
+          <input type="text" id="author" name="author" value="<%= post.author || '' %>" />
+          <% if (errors && errors.author) { %><span class="error"><%= errors.author %></span><% } %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="excerpt">Excerpt <span class="muted">(optional)</span></label>
+        <input type="text" id="excerpt" name="excerpt" value="<%= post.excerpt || '' %>" maxlength="500" />
+        <% if (errors && errors.excerpt) { %><span class="error"><%= errors.excerpt %></span><% } %>
+      </div>
+
+      <div class="form-row">
+        <label for="content">Content</label>
+        <textarea id="content" name="content" rows="12" required><%= post.content || '' %></textarea>
+        <span class="muted" style="font-size:.82rem;">Separate paragraphs with a blank line.</span>
+        <% if (errors && errors.content) { %><span class="error"><%= errors.content %></span><% } %>
+      </div>
+
+      <div class="form-row">
+        <label for="coverImage">Cover image <span class="muted">(optional, max 5MB)</span></label>
+        <input type="file" id="coverImage" name="coverImage" accept="image/*" />
+        <input type="hidden" name="existingCover" value="<%= post.coverImage || '' %>" />
+        <% if (post.coverImage) { %>
+          <div class="form-preview">
+            <img src="<%= post.coverImage %>" alt="Current cover" />
+            <span class="muted">Current cover — uploading a new file replaces it.</span>
+          </div>
+        <% } %>
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" name="published" <%= isPublished ? 'checked' : '' %> />
+        <span>Published (visible on the public site)</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-lg">Save post</button>
+    </form>
+  </div>
+
+<%- include('../foot') %>

@@ -5,8 +5,18 @@ const envSchema = z.object({
   PORT: z.string().default("3000"),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 
-  // Session
+  // Session (used for flash messages only)
   SESSION_SECRET: z.string().min(1, "SESSION_SECRET is required").default("spmj-dev-secret-change-me"),
+
+  // JWT access / refresh token secrets
+  JWT_SECRET: z
+    .string()
+    .min(1, "JWT_SECRET is required")
+    .default("spmj-jwt-access-secret-change-me"),
+  REFRESH_TOKEN_SECRET: z
+    .string()
+    .min(1, "REFRESH_TOKEN_SECRET is required")
+    .default("spmj-jwt-refresh-secret-change-me"),
 
   // PostgreSQL database
   POSTGRES_DATABASE_URL: z

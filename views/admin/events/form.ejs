@@ -1,0 +1,75 @@
+<%- include('../head', { title, active: 'events' }) %>
+
+  <%
+    let dateVal = '';
+    if (event && event.eventDate) {
+      const d = new Date(event.eventDate);
+      dateVal = isNaN(d) ? event.eventDate : d.toISOString().slice(0, 16);
+    }
+    const isPublished = event && (event.published === undefined || event.published === true || event.published === 'on' || event.published === 'true');
+  %>
+
+  <div class="admin-list-head">
+    <div>
+      <span class="eyebrow">Events</span>
+      <h1><%= heading %></h1>
+    </div>
+    <a href="/admin/events" class="btn btn-ghost">← Back</a>
+  </div>
+
+  <div class="admin-panel form-panel">
+    <form action="<%= formAction %>" method="POST" enctype="multipart/form-data" class="contact-form">
+      <div class="form-row">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" value="<%= event.title || '' %>" required />
+        <% if (errors && errors.title) { %><span class="error"><%= errors.title %></span><% } %>
+      </div>
+
+      <div class="form-row">
+        <label for="summary">Short summary <span class="muted">(optional)</span></label>
+        <input type="text" id="summary" name="summary" value="<%= event.summary || '' %>" maxlength="500" />
+        <% if (errors && errors.summary) { %><span class="error"><%= errors.summary %></span><% } %>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label for="eventDate">Date &amp; time</label>
+          <input type="datetime-local" id="eventDate" name="eventDate" value="<%= dateVal %>" required />
+          <% if (errors && errors.eventDate) { %><span class="error"><%= errors.eventDate %></span><% } %>
+        </div>
+        <div class="form-row">
+          <label for="location">Location <span class="muted">(optional)</span></label>
+          <input type="text" id="location" name="location" value="<%= event.location || '' %>" />
+          <% if (errors && errors.location) { %><span class="error"><%= errors.location %></span><% } %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="8" required><%= event.description || '' %></textarea>
+        <span class="muted" style="font-size:.82rem;">Separate paragraphs with a blank line.</span>
+        <% if (errors && errors.description) { %><span class="error"><%= errors.description %></span><% } %>
+      </div>
+
+      <div class="form-row">
+        <label for="coverImage">Cover image <span class="muted">(optional, max 5MB)</span></label>
+        <input type="file" id="coverImage" name="coverImage" accept="image/*" />
+        <input type="hidden" name="existingCover" value="<%= event.coverImage || '' %>" />
+        <% if (event.coverImage) { %>
+          <div class="form-preview">
+            <img src="<%= event.coverImage %>" alt="Current cover" />
+            <span class="muted">Current cover — uploading a new file replaces it.</span>
+          </div>
+        <% } %>
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" name="published" <%= isPublished ? 'checked' : '' %> />
+        <span>Published (visible on the public site)</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-lg">Save event</button>
+    </form>
+  </div>
+
+<%- include('../foot') %>

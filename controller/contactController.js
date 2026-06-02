@@ -3,7 +3,7 @@ import logger from "../utils/logger.js";
 
 export const getContactPage = async (req, res) => {
   try {
-    const successMessages = req.flash("success");
+    const successMessages = res.locals.flash.success;
     return res.render("contact", {
       title: "Contact — SPMJ Foundation",
       page: "contact",

@@ -1,0 +1,22 @@
+<article class="content-card event-card-pub">
+  <a href="/events/<%= e.slug %>" class="content-media">
+    <% if (e.coverImage) { %>
+      <img src="<%= e.coverImage %>" alt="<%= e.title %>" loading="lazy" />
+    <% } else { %>
+      <div class="content-media placeholder" aria-hidden="true">
+        <span><%= e.title.charAt(0).toUpperCase() %></span>
+      </div>
+    <% } %>
+  </a>
+  <div class="content-body">
+    <div class="content-meta">
+      <time datetime="<%= new Date(e.eventDate).toISOString() %>">
+        <%= new Date(e.eventDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %>
+      </time>
+      <% if (e.location) { %><span>· <%= e.location %></span><% } %>
+    </div>
+    <h3><a href="/events/<%= e.slug %>"><%= e.title %></a></h3>
+    <% if (e.summary) { %><p><%= e.summary %></p><% } %>
+    <a href="/events/<%= e.slug %>" class="link-arrow">View details →</a>
+  </div>
+</article>

@@ -1,22 +1,55 @@
 import { validateAdminLogin } from "../validators/auth-validator.js";
-import { verifyPassword } from "../service/auth-service.js";
+import {
+  verifyPassword,
+  generateJwtToken,
+  generateRefreshToken,
+  createSession,
+  verifyRefreshToken,
+  deleteRefreshTokenById,
+} from "../service/auth-service.js";
 import { getUserByEmail } from "../service/user-service.js";
+import { countEvents } from "../service/event-service.js";
+import { countBlogPosts } from "../service/blog-service.js";
+import { countGalleryItems } from "../service/gallery-service.js";
+import {
+  setAuthCookies,
+  clearAuthCookies,
+} from "../middlewares/verify-auth-middleware.js";
 import { ROLES } from "../config/constant.js";
 import logger from "../utils/logger.js";
 
+/**
+ * Create a session and set fresh access + refresh token cookies.
+ */
+const issueTokens = async (user, req, res) => {
+  const session = await createSession(user.id, {
+    ip: req.clientIp || req.ip,
+    userAgent: req.headers["user-agent"],
+  });
+
+  const accessToken = generateJwtToken({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    refreshTokenId: session.id,
+  });
+
+  const refreshToken = generateRefreshToken({ refreshTokenId: session.id });
+
+  setAuthCookies(res, accessToken, refreshToken);
+};
+
 export const getLoginPage = async (req, res) => {
   try {
-    const user = req.session?.user;
-    if (user) {
-      return res.redirect(
-        user.role === ROLES.ADMIN ? "/admin/dashboard" : "/"
-      );
+    if (req.user) {
+      return res.redirect(req.user.role === ROLES.ADMIN ? "/admin/dashboard" : "/");
     }
     return res.render("admin/login", {
       title: "Admin Login — SPMJ Foundation",
       page: "admin",
-      error: req.flash("error"),
-      success: req.flash("success"),
+      error: res.locals.flash.error,
+      success: res.locals.flash.success,
     });
   } catch (error) {
     logger.logError(error, req);
@@ -52,13 +85,7 @@ export const submitLogin = async (req, res) => {
       return res.redirect("/admin/login");
     }
 
-    // Store the authenticated principal in the session
-    req.session.user = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    };
+    await issueTokens(user, req, res);
     logger.logAuth("login_success", user.id, { email, role: user.role });
 
     if (user.role === ROLES.ADMIN) {
@@ -80,10 +107,17 @@ export const submitLogin = async (req, res) => {
 
 export const getDashboardPage = async (req, res) => {
   try {
+    const [events, posts, gallery] = await Promise.all([
+      countEvents(),
+      countBlogPosts(),
+      countGalleryItems(),
+    ]);
+
     return res.render("admin/dashboard", {
       title: "Admin Dashboard — SPMJ Foundation",
       page: "admin",
-      user: req.session.user,
+      user: req.user,
+      counts: { events, posts, gallery },
     });
   } catch (error) {
     logger.logError(error, req);
@@ -92,14 +126,23 @@ export const getDashboardPage = async (req, res) => {
 };
 
 export const logout = async (req, res) => {
-  const email = req.session?.user?.email;
-  const userId = req.session?.user?.id;
-  req.session.destroy((err) => {
-    if (err) {
-      logger.logError(err, req);
-    } else {
-      logger.logAuth("logout", userId ?? null, { email });
+  const email = req.user?.email;
+  const userId = req.user?.id;
+
+  try {
+    const refreshToken = req.cookies?.refresh_token;
+    if (refreshToken) {
+      const decoded = verifyRefreshToken(refreshToken);
+      if (decoded?.refreshTokenId) {
+        await deleteRefreshTokenById(decoded.refreshTokenId);
+      }
     }
-    return res.redirect("/admin/login");
-  });
+    logger.logAuth("logout", userId ?? null, { email });
+  } catch (error) {
+    // Token may already be invalid/expired — still clear cookies below.
+    logger.logError(error, req);
+  }
+
+  clearAuthCookies(res);
+  return res.redirect("/admin/login");
 };
