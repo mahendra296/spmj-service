@@ -40,24 +40,42 @@ export const getBlogPostBySlug = async (slug) => {
   return post;
 };
 
-/** All posts, newest first — for the admin list. */
-export const getAllBlogPosts = async () => {
-  return db
+/**
+ * All posts, newest first — for the admin list.
+ * Pass { limit, offset } to fetch a single page; omit for the full list.
+ */
+export const getAllBlogPosts = async ({ limit, offset = 0 } = {}) => {
+  let query = db
     .select()
     .from(blogPostsTable)
     .orderBy(desc(blogPostsTable.publishedAt));
+  if (limit != null) query = query.limit(limit).offset(offset);
+  return query;
 };
 
-/** Published posts only — for the public blog. */
-export const getPublishedBlogPosts = async () => {
-  return db
+/**
+ * Published posts only — for the public blog.
+ * Pass { limit, offset } to fetch a single page; omit for the full list.
+ */
+export const getPublishedBlogPosts = async ({ limit, offset = 0 } = {}) => {
+  let query = db
     .select()
     .from(blogPostsTable)
     .where(eq(blogPostsTable.published, true))
     .orderBy(desc(blogPostsTable.publishedAt));
+  if (limit != null) query = query.limit(limit).offset(offset);
+  return query;
 };
 
 export const countBlogPosts = async () => {
   const [row] = await db.select({ value: count() }).from(blogPostsTable);
+  return row?.value ?? 0;
+};
+
+export const countPublishedBlogPosts = async () => {
+  const [row] = await db
+    .select({ value: count() })
+    .from(blogPostsTable)
+    .where(eq(blogPostsTable.published, true));
   return row?.value ?? 0;
 };

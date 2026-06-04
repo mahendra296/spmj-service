@@ -4,9 +4,12 @@ import {
   deleteGalleryItem,
   getGalleryItemById,
   getAllGalleryItems,
+  countGalleryItems,
 } from "../service/gallery-service.js";
 import { getAllEvents } from "../service/event-service.js";
 import { validateGalleryItem } from "../validators/gallery-validator.js";
+import { parsePage, parsePageSize, pageSizeQuery, buildPagination } from "../utils/pagination.js";
+import { PAGE_SIZE_OPTIONS } from "../config/constant.js";
 import logger from "../utils/logger.js";
 
 /* ---------- Public ---------- */
@@ -29,11 +32,26 @@ export const getGalleryPage = async (req, res) => {
 
 export const listGalleryAdmin = async (req, res) => {
   try {
-    const items = await getAllGalleryItems();
+    const pageSize = parsePageSize(req.query.size);
+    const totalCount = await countGalleryItems();
+    const pagination = buildPagination({
+      page: parsePage(req.query.page),
+      pageSize,
+      totalCount,
+      baseUrl: "/admin/gallery",
+      query: pageSizeQuery(pageSize),
+    });
+    const items = await getAllGalleryItems({
+      limit: pageSize,
+      offset: pagination.offset,
+    });
     return res.render("admin/gallery/index", {
       title: "Manage Gallery — SPMJ Admin",
       page: "admin",
       items,
+      pagination,
+      pageSize,
+      pageSizeOptions: PAGE_SIZE_OPTIONS,
     });
   } catch (error) {
     logger.logError(error, req);

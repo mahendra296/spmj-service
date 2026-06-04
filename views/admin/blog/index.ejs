@@ -5,7 +5,10 @@
         <span class="eyebrow">Blog &amp; News</span>
         <h1>Manage posts</h1>
       </div>
-      <a href="/admin/blog/new" class="btn btn-primary">+ New post</a>
+      <div class="admin-list-actions">
+        <%- include('../../partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/admin/blog', pageSizeQuery: {} }) %>
+        <a href="/admin/blog/new" class="btn btn-primary">+ New post</a>
+      </div>
     </div>
 
     <div class="admin-panel">
@@ -49,6 +52,7 @@
             </tbody>
           </table>
         </div>
+        <%- include('../../partials/pagination', { pagination }) %>
       <% } %>
     </div>
 

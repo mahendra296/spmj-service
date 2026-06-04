@@ -32,8 +32,8 @@ export const getGalleryItemById = async (id) => {
  * All gallery items, newest first, with the linked event title (if any).
  * Used for both the public gallery and the admin list.
  */
-export const getAllGalleryItems = async () => {
-  return db
+export const getAllGalleryItems = async ({ limit, offset = 0 } = {}) => {
+  let query = db
     .select({
       id: galleryItemsTable.id,
       title: galleryItemsTable.title,
@@ -47,6 +47,8 @@ export const getAllGalleryItems = async () => {
     .from(galleryItemsTable)
     .leftJoin(eventsTable, eq(galleryItemsTable.eventId, eventsTable.id))
     .orderBy(desc(galleryItemsTable.createdAt));
+  if (limit != null) query = query.limit(limit).offset(offset);
+  return query;
 };
 
 export const countGalleryItems = async () => {

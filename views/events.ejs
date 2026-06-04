@@ -22,8 +22,11 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="upcoming">
       <div class="container">
+        <div class="list-controls">
+          <%- include('partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/events', pageSizeQuery: {} }) %>
+        </div>
         <div class="section-head" style="text-align:left;margin-bottom:32px;">
           <h2>Upcoming events</h2>
         </div>
@@ -35,11 +38,12 @@
               <%- include('partials/event-card', { e }) %>
             <% }) %>
           </div>
+          <%- include('partials/pagination', { pagination: upPagination }) %>
         <% } %>
       </div>
     </section>
 
-    <section class="section section-alt">
+    <section class="section section-alt" id="past">
       <div class="container">
         <div class="section-head" style="text-align:left;margin-bottom:32px;">
           <h2>Past events</h2>
@@ -52,6 +56,7 @@
               <%- include('partials/event-card', { e }) %>
             <% }) %>
           </div>
+          <%- include('partials/pagination', { pagination: pastPagination }) %>
         <% } %>
       </div>
     </section>

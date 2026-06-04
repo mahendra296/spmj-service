@@ -6,20 +6,38 @@ import {
   getBlogPostBySlug,
   getAllBlogPosts,
   getPublishedBlogPosts,
+  countBlogPosts,
+  countPublishedBlogPosts,
 } from "../service/blog-service.js";
 import { validateBlogPost } from "../validators/blog-validator.js";
-import { BLOG_CATEGORIES } from "../config/constant.js";
+import { parsePage, parsePageSize, pageSizeQuery, buildPagination } from "../utils/pagination.js";
+import { BLOG_CATEGORIES, PAGE_SIZE_OPTIONS } from "../config/constant.js";
 import logger from "../utils/logger.js";
 
 /* ---------- Public ---------- */
 
 export const getBlogPage = async (req, res) => {
   try {
-    const posts = await getPublishedBlogPosts();
+    const pageSize = parsePageSize(req.query.size);
+    const totalCount = await countPublishedBlogPosts();
+    const pagination = buildPagination({
+      page: parsePage(req.query.page),
+      pageSize,
+      totalCount,
+      baseUrl: "/blog",
+      query: pageSizeQuery(pageSize),
+    });
+    const posts = await getPublishedBlogPosts({
+      limit: pageSize,
+      offset: pagination.offset,
+    });
     return res.render("blog", {
       title: "Blog & News — SPMJ Foundation",
       page: "blog",
       posts,
+      pagination,
+      pageSize,
+      pageSizeOptions: PAGE_SIZE_OPTIONS,
     });
   } catch (error) {
     logger.logError(error, req);
@@ -46,11 +64,26 @@ export const getBlogDetailPage = async (req, res, next) => {
 
 export const listBlogAdmin = async (req, res) => {
   try {
-    const posts = await getAllBlogPosts();
+    const pageSize = parsePageSize(req.query.size);
+    const totalCount = await countBlogPosts();
+    const pagination = buildPagination({
+      page: parsePage(req.query.page),
+      pageSize,
+      totalCount,
+      baseUrl: "/admin/blog",
+      query: pageSizeQuery(pageSize),
+    });
+    const posts = await getAllBlogPosts({
+      limit: pageSize,
+      offset: pagination.offset,
+    });
     return res.render("admin/blog/index", {
       title: "Manage Blog — SPMJ Admin",
       page: "admin",
       posts,
+      pagination,
+      pageSize,
+      pageSizeOptions: PAGE_SIZE_OPTIONS,
     });
   } catch (error) {
     logger.logError(error, req);

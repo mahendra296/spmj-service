@@ -1,0 +1,47 @@
+<%
+  /* Shared pagination control. Expects a `pagination` object built by
+     utils/pagination.js (buildPagination). Renders nothing for single pages. */
+  if (pagination && pagination.totalPages > 1) {
+    const { page, totalPages, baseUrl, param, query = {}, hash = '' } = pagination;
+    const href = (p) => {
+      const params = new URLSearchParams(query);
+      params.set(param, p);
+      const qs = params.toString();
+      return baseUrl + (qs ? '?' + qs : '') + hash;
+    };
+    // Windowed range so long lists don't print every page number.
+    const windowSize = 5;
+    let start = Math.max(1, page - Math.floor(windowSize / 2));
+    let end = Math.min(totalPages, start + windowSize - 1);
+    start = Math.max(1, end - windowSize + 1);
+%>
+<nav class="pagination" aria-label="Pagination">
+  <% if (pagination.hasPrev) { %>
+    <a class="page-link page-nav page-edge" href="<%= href(1) %>" aria-label="First page" title="First page">« First</a>
+    <a class="page-link page-nav" href="<%= href(page - 1) %>" rel="prev" aria-label="Previous page">‹ Prev</a>
+  <% } else { %>
+    <span class="page-link page-nav page-edge is-disabled" aria-disabled="true">« First</span>
+    <span class="page-link page-nav is-disabled" aria-disabled="true">‹ Prev</span>
+  <% } %>
+
+  <% if (start > 1) { %><span class="page-ellipsis">…</span><% } %>
+
+  <% for (let p = start; p <= end; p++) { %>
+    <% if (p === page) { %>
+      <span class="page-link is-current" aria-current="page"><%= p %></span>
+    <% } else { %>
+      <a class="page-link" href="<%= href(p) %>"><%= p %></a>
+    <% } %>
+  <% } %>
+
+  <% if (end < totalPages) { %><span class="page-ellipsis">…</span><% } %>
+
+  <% if (pagination.hasNext) { %>
+    <a class="page-link page-nav" href="<%= href(page + 1) %>" rel="next" aria-label="Next page">Next ›</a>
+    <a class="page-link page-nav page-edge" href="<%= href(totalPages) %>" aria-label="Last page" title="Last page">Last »</a>
+  <% } else { %>
+    <span class="page-link page-nav is-disabled" aria-disabled="true">Next ›</span>
+    <span class="page-link page-nav page-edge is-disabled" aria-disabled="true">Last »</span>
+  <% } %>
+</nav>
+<% } %>

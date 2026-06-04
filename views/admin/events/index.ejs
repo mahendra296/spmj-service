@@ -5,7 +5,10 @@
         <span class="eyebrow">Events</span>
         <h1>Manage events</h1>
       </div>
-      <a href="/admin/events/new" class="btn btn-primary">+ New event</a>
+      <div class="admin-list-actions">
+        <%- include('../../partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/admin/events', pageSizeQuery: {} }) %>
+        <a href="/admin/events/new" class="btn btn-primary">+ New event</a>
+      </div>
     </div>
 
     <div class="admin-panel">
@@ -56,6 +59,7 @@
             </tbody>
           </table>
         </div>
+        <%- include('../../partials/pagination', { pagination }) %>
       <% } %>
     </div>
 

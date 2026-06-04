@@ -38,3 +38,7 @@ export const MEDIA_TYPES = ["image", "video"];
 // Upload limits
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 export const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+
+// Pagination — items per page (chosen from the UI dropdown)
+export const DEFAULT_PAGE_SIZE = 5;
+export const PAGE_SIZE_OPTIONS = [5, 10, 25, 50];

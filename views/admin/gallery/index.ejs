@@ -5,7 +5,10 @@
         <span class="eyebrow">Gallery</span>
         <h1>Manage media</h1>
       </div>
-      <a href="/admin/gallery/new" class="btn btn-primary">+ Add media</a>
+      <div class="admin-list-actions">
+        <%- include('../../partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/admin/gallery', pageSizeQuery: {} }) %>
+        <a href="/admin/gallery/new" class="btn btn-primary">+ Add media</a>
+      </div>
     </div>
 
     <div class="admin-panel">
@@ -54,6 +57,7 @@
             </tbody>
           </table>
         </div>
+        <%- include('../../partials/pagination', { pagination }) %>
       <% } %>
     </div>
 

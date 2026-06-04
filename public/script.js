@@ -48,6 +48,11 @@
       .forEach((el) => observer.observe(el));
   }
 
+  /* ---------- Auto-submitting forms (page-size selector) ---------- */
+  document.querySelectorAll('form[data-autosubmit] select').forEach((select) => {
+    select.addEventListener('change', () => select.form.submit());
+  });
+
   /* ---------- Image slider ---------- */
   const slider = document.querySelector('.slider');
   if (slider) {

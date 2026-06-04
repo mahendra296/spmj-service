@@ -7,23 +7,65 @@ import {
   getAllEvents,
   getUpcomingEvents,
   getPastEvents,
+  countEvents,
+  countUpcomingEvents,
+  countPastEvents,
 } from "../service/event-service.js";
 import { validateEvent } from "../validators/event-validator.js";
+import { parsePage, parsePageSize, pageSizeQuery, buildPagination } from "../utils/pagination.js";
+import { PAGE_SIZE_OPTIONS } from "../config/constant.js";
 import logger from "../utils/logger.js";
 
 /* ---------- Public ---------- */
 
 export const getEventsPage = async (req, res) => {
   try {
-    const [upcoming, past] = await Promise.all([
-      getUpcomingEvents(),
-      getPastEvents(),
+    // One page-size selector drives both sections; each section keeps its own
+    // page number (?up= / ?past=).
+    const pageSize = parsePageSize(req.query.size);
+    const sizeQuery = pageSizeQuery(pageSize);
+
+    const [upCount, pastCount] = await Promise.all([
+      countUpcomingEvents(),
+      countPastEvents(),
     ]);
+
+    const upPagination = buildPagination({
+      page: parsePage(req.query.up),
+      pageSize,
+      totalCount: upCount,
+      baseUrl: "/events",
+      param: "up",
+      hash: "#upcoming",
+    });
+    const pastPagination = buildPagination({
+      page: parsePage(req.query.past),
+      pageSize,
+      totalCount: pastCount,
+      baseUrl: "/events",
+      param: "past",
+      hash: "#past",
+    });
+
+    // Each section's links preserve the chosen size and the other section's
+    // page, so paging or resizing one doesn't reset the other.
+    upPagination.query = { ...sizeQuery, ...(pastPagination.page > 1 ? { past: pastPagination.page } : {}) };
+    pastPagination.query = { ...sizeQuery, ...(upPagination.page > 1 ? { up: upPagination.page } : {}) };
+
+    const [upcoming, past] = await Promise.all([
+      getUpcomingEvents({ limit: pageSize, offset: upPagination.offset }),
+      getPastEvents({ limit: pageSize, offset: pastPagination.offset }),
+    ]);
+
     return res.render("events", {
       title: "Events — SPMJ Foundation",
       page: "events",
       upcoming,
       past,
+      upPagination,
+      pastPagination,
+      pageSize,
+      pageSizeOptions: PAGE_SIZE_OPTIONS,
     });
   } catch (error) {
     logger.logError(error, req);
@@ -50,11 +92,26 @@ export const getEventDetailPage = async (req, res, next) => {
 
 export const listEventsAdmin = async (req, res) => {
   try {
-    const events = await getAllEvents();
+    const pageSize = parsePageSize(req.query.size);
+    const totalCount = await countEvents();
+    const pagination = buildPagination({
+      page: parsePage(req.query.page),
+      pageSize,
+      totalCount,
+      baseUrl: "/admin/events",
+      query: pageSizeQuery(pageSize),
+    });
+    const events = await getAllEvents({
+      limit: pageSize,
+      offset: pagination.offset,
+    });
     return res.render("admin/events/index", {
       title: "Manage Events — SPMJ Admin",
       page: "admin",
       events,
+      pagination,
+      pageSize,
+      pageSizeOptions: PAGE_SIZE_OPTIONS,
     });
   } catch (error) {
     logger.logError(error, req);

@@ -40,37 +40,64 @@ export const getEventBySlug = async (slug) => {
   return event;
 };
 
-/** All events, newest first — for the admin list. */
-export const getAllEvents = async () => {
-  return db.select().from(eventsTable).orderBy(desc(eventsTable.eventDate));
+/**
+ * All events, newest first — for the admin list.
+ * Pass { limit, offset } to fetch a single page; omit for the full list
+ * (e.g. the gallery form's event dropdown needs every event).
+ */
+export const getAllEvents = async ({ limit, offset = 0 } = {}) => {
+  let query = db.select().from(eventsTable).orderBy(desc(eventsTable.eventDate));
+  if (limit != null) query = query.limit(limit).offset(offset);
+  return query;
 };
 
+/** Predicate for published events whose date is still in the future. */
+const upcomingWhere = () =>
+  and(eq(eventsTable.published, true), gte(eventsTable.eventDate, new Date()));
+
+/** Predicate for published events whose date has passed. */
+const pastWhere = () =>
+  and(eq(eventsTable.published, true), lt(eventsTable.eventDate, new Date()));
+
 /** Published upcoming events (date in the future), soonest first. */
-export const getUpcomingEvents = async () => {
-  return db
+export const getUpcomingEvents = async ({ limit, offset = 0 } = {}) => {
+  let query = db
     .select()
     .from(eventsTable)
-    .where(
-      and(
-        eq(eventsTable.published, true),
-        gte(eventsTable.eventDate, new Date())
-      )
-    )
+    .where(upcomingWhere())
     .orderBy(asc(eventsTable.eventDate));
+  if (limit != null) query = query.limit(limit).offset(offset);
+  return query;
 };
 
 /** Published past events (date in the past), most recent first. */
-export const getPastEvents = async () => {
-  return db
+export const getPastEvents = async ({ limit, offset = 0 } = {}) => {
+  let query = db
     .select()
     .from(eventsTable)
-    .where(
-      and(eq(eventsTable.published, true), lt(eventsTable.eventDate, new Date()))
-    )
+    .where(pastWhere())
     .orderBy(desc(eventsTable.eventDate));
+  if (limit != null) query = query.limit(limit).offset(offset);
+  return query;
 };
 
 export const countEvents = async () => {
   const [row] = await db.select({ value: count() }).from(eventsTable);
+  return row?.value ?? 0;
+};
+
+export const countUpcomingEvents = async () => {
+  const [row] = await db
+    .select({ value: count() })
+    .from(eventsTable)
+    .where(upcomingWhere());
+  return row?.value ?? 0;
+};
+
+export const countPastEvents = async () => {
+  const [row] = await db
+    .select({ value: count() })
+    .from(eventsTable)
+    .where(pastWhere());
   return row?.value ?? 0;
 };

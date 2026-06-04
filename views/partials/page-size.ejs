@@ -1,0 +1,26 @@
+<%
+  /* Page-size selector. A GET form so it works without JS (the noscript Apply
+     button submits it); script.js auto-submits on change when JS is on.
+     Expects: pageSize (current), pageSizeOptions, pageSizeBaseUrl,
+     pageSizeQuery (params to keep as hidden inputs — page params are omitted
+     on purpose so changing the size returns to the first page). */
+  const _opts = pageSizeOptions || [5, 10, 25, 50];
+  const _preserve = pageSizeQuery || {};
+%>
+<form class="page-size" method="get" action="<%= pageSizeBaseUrl %>" data-autosubmit>
+  <% Object.entries(_preserve).forEach(([k, v]) => { %>
+    <input type="hidden" name="<%= k %>" value="<%= v %>" />
+  <% }) %>
+  <label class="page-size-label">
+    <span>Show</span>
+    <span class="select-wrap">
+      <select name="size" class="page-size-select" aria-label="Items per page">
+        <% _opts.forEach((o) => { %>
+          <option value="<%= o %>"<%= o === pageSize ? ' selected' : '' %>><%= o %></option>
+        <% }) %>
+      </select>
+    </span>
+    <span>per page</span>
+  </label>
+  <noscript><button type="submit" class="btn btn-ghost">Apply</button></noscript>
+</form>

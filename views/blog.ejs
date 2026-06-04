@@ -27,6 +27,9 @@
         <% if (posts.length === 0) { %>
           <p class="muted">No articles published yet — check back soon.</p>
         <% } else { %>
+          <div class="list-controls">
+            <%- include('partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/blog', pageSizeQuery: {} }) %>
+          </div>
           <div class="grid grid-3">
             <% posts.forEach((p) => { %>
               <article class="content-card">
@@ -51,6 +54,7 @@
               </article>
             <% }) %>
           </div>
+          <%- include('partials/pagination', { pagination }) %>
         <% } %>
       </div>
     </section>
