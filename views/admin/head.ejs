@@ -22,6 +22,7 @@
         <a href="/admin/events" class="<%= typeof active !== 'undefined' && active === 'events' ? 'active' : '' %>">Events</a>
         <a href="/admin/blog" class="<%= typeof active !== 'undefined' && active === 'blog' ? 'active' : '' %>">Blog</a>
         <a href="/admin/gallery" class="<%= typeof active !== 'undefined' && active === 'gallery' ? 'active' : '' %>">Gallery</a>
+        <a href="/admin/donations" class="<%= typeof active !== 'undefined' && active === 'donations' ? 'active' : '' %>">Donations</a>
       </nav>
       <div class="nav-actions">
         <% if (user) { %><span class="muted">Signed in as <strong><%= user.name %></strong></span><% } %>

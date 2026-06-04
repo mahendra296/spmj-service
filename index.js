@@ -57,7 +57,15 @@ app.use(requestIp.mw());
 
 // Serve static files before auth check (CSS, JS, images don't need authentication)
 app.use(express.static("public"));
-app.use(express.json());
+// Capture the raw JSON body so the Razorpay webhook can verify its HMAC
+// signature against the exact bytes received (parsing would otherwise lose them).
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 
 // Verify the JWT access/refresh tokens and attach the signed-in user to

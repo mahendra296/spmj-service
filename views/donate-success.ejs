@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="donate-receipt">
+          <% const isPaid = donation.status === 'paid'; %>
+          <div class="donate-receipt-icon <%= isPaid ? 'is-paid' : 'is-pending' %>"><%= isPaid ? '✓' : '⏳' %></div>
+          <% if (isPaid) { %>
+            <h1>Thank you, <%= donation.donorName %>!</h1>
+            <p class="lead">Your donation of <strong><%= amountDisplay %></strong> has been received. You're helping a child stay in school.</p>
+          <% } else { %>
+            <h1>Payment is being confirmed</h1>
+            <p class="lead">Thanks, <%= donation.donorName %>. Your donation of <strong><%= amountDisplay %></strong> is processing — we'll email you once it's confirmed.</p>
+          <% } %>
+
+          <dl class="donate-receipt-meta">
+            <div><dt>Reference</dt><dd><%= donation.receipt %></dd></div>
+            <div><dt>Amount</dt><dd><%= amountDisplay %></dd></div>
+            <div><dt>Status</dt><dd><span class="badge badge-<%= isPaid ? 'upcoming' : 'draft' %>"><%= donation.status %></span></dd></div>
+            <div><dt>Date</dt><dd><%= new Date(donation.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></dd></div>
+          </dl>
+
+          <p class="muted">A receipt has been recorded against your email, <%= donation.donorEmail %>.</p>
+          <div class="donate-receipt-actions">
+            <a href="/" class="btn btn-ghost">Back to home</a>
+            <a href="/donate" class="btn btn-primary">Donate again</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@ import * as authController from "../controller/authController.js";
 import * as eventController from "../controller/eventController.js";
 import * as blogController from "../controller/blogController.js";
 import * as galleryController from "../controller/galleryController.js";
+import * as donationController from "../controller/donationController.js";
 import { requireAdmin } from "../middlewares/verify-auth-middleware.js";
 import {
   uploadEventCover,
@@ -37,6 +38,15 @@ router
   .route("/contact")
   .get(named("pub_get_contact"), contactController.getContactPage)
   .post(named("pub_post_contact"), contactController.submitContact);
+
+/* ---------- Donations (Razorpay) ---------- */
+router.get("/donate", named("pub_get_donate"), donationController.getDonatePage);
+router.get("/donate/success", named("pub_get_donate_success"), donationController.getDonationSuccessPage);
+// JSON: create the order, then verify the checkout callback.
+router.post("/donate/order", named("pub_post_donate_order"), donationController.createOrder);
+router.post("/donate/verify", named("pub_post_donate_verify"), donationController.verifyPayment);
+// Server-to-server webhook (no auth — authenticated by HMAC signature instead).
+router.post("/donate/webhook", named("pub_post_donate_webhook"), donationController.handleWebhook);
 
 /* ---------- Admin authentication ---------- */
 router
@@ -121,5 +131,9 @@ router.post(
   galleryController.updateGalleryAdmin
 );
 router.post("/admin/gallery/:id/delete", named("pri_post_gallery_delete"), requireAdmin, galleryController.deleteGalleryAdmin);
+
+/* ---------- Admin: Donations (ROLE_ADMIN, read-only + CSV) ---------- */
+router.get("/admin/donations", named("pri_get_donations"), requireAdmin, donationController.listDonationsAdmin);
+router.get("/admin/donations/export", named("pri_get_donations_export"), requireAdmin, donationController.exportDonationsCsv);
 
 export const pageRouter = router;

@@ -35,6 +35,9 @@
         <% if (!gallery || gallery.length === 0) { %>
           <p class="muted" style="text-align:center;">No photos or videos have been added yet.</p>
         <% } else { %>
+          <div class="list-controls">
+            <%- include('partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/services#gallery', pageSizeQuery: {} }) %>
+          </div>
           <div class="gallery-grid">
             <% gallery.forEach((item) => { %>
               <figure class="gallery-item">
@@ -62,6 +65,7 @@
               </figure>
             <% }) %>
           </div>
+          <%- include('partials/pagination', { pagination }) %>
         <% } %>
       </div>
     </section>

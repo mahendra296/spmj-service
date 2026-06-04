@@ -15,10 +15,13 @@
     <div class="nav-actions">
       <% if (user) { %>
         <a href="/admin/dashboard" class="btn btn-ghost">Dashboard</a>
+        <form action="/admin/logout" method="POST" class="logout-form">
+          <button type="submit" class="btn btn-ghost">Sign out</button>
+        </form>
       <% } else { %>
         <a href="/admin/login" class="btn btn-ghost">Admin</a>
       <% } %>
-      <a href="/contact" class="btn btn-primary">Donate</a>
+      <a href="/donate" class="btn btn-primary <%= page === 'donate' ? 'active' : '' %>">Donate</a>
     </div>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>

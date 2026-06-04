@@ -24,11 +24,11 @@ const envSchema = z.object({
     .min(1, "POSTGRES_DATABASE_URL is required")
     .default("postgresql://postgres:root@localhost:5432/spmjdb"),
 
-  // Seed credentials (used by drizzle/seed.js)
-  ADMIN_EMAIL: z.string().email().default("admin@spmjfoundation.org"),
-  ADMIN_PASSWORD: z.string().min(1).default("Admin@123"),
-  USER_EMAIL: z.string().email().default("user@spmjfoundation.org"),
-  USER_PASSWORD: z.string().min(1).default("User@123"),
+  // Razorpay — optional so the app still boots without them; the donation
+  // flow detects whether they're set and degrades gracefully when they aren't.
+  RAZORPAY_KEY_ID: z.string().default(""),
+  RAZORPAY_KEY_SECRET: z.string().default(""),
+  RAZORPAY_WEBHOOK_SECRET: z.string().default(""),
 });
 
 const parseEnv = () => {

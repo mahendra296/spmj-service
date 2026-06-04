@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Support SPMJ Foundation — your donation helps bring quality education to every child." />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Donate</span>
+        <h1 class="display">Give the gift of <span class="grad">education</span>.</h1>
+        <p class="lead">Every contribution funds books, meals, and safe classrooms for children who need them most. Donations are processed securely by Razorpay.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container two-col contact-wrap">
+        <div class="contact-info">
+          <h3>Where your money goes</h3>
+          <p class="muted">100% of your donation supports our programmes.</p>
+          <ul class="contact-list">
+            <li><span class="contact-label">₹500</span><span>School supplies for a child for a term</span></li>
+            <li><span class="contact-label">₹1,000</span><span>A month of nutritious midday meals</span></li>
+            <li><span class="contact-label">₹2,500</span><span>After-school tutoring for a student</span></li>
+            <li><span class="contact-label">₹5,000</span><span>A need-based scholarship contribution</span></li>
+          </ul>
+        </div>
+
+        <div class="contact-form-wrap">
+          <% if (!paymentsEnabled) { %>
+            <div class="alert error">
+              <strong>Donations are temporarily unavailable.</strong>
+              <p>Online giving isn't configured right now. Please <a href="/contact">contact us</a> to donate another way.</p>
+            </div>
+          <% } else { %>
+            <form id="donate-form" class="contact-form donate-form" novalidate
+                  data-currency="<%= currency %>"
+                  data-min="<%= minAmount %>"
+                  data-max="<%= maxAmount %>">
+              <fieldset class="donate-amount-field">
+                <legend>Choose an amount</legend>
+                <div class="donate-amounts" role="group" aria-label="Preset donation amounts">
+                  <% presets.forEach((p) => { %>
+                    <button type="button" class="amount-chip" data-amount="<%= p %>">₹<%= p.toLocaleString('en-IN') %></button>
+                  <% }) %>
+                </div>
+                <div class="form-row amount-input-row">
+                  <label for="amount">Or enter an amount (₹)</label>
+                  <input type="number" id="amount" name="amount" inputmode="numeric"
+                    min="<%= minAmount %>" max="<%= maxAmount %>" step="1"
+                    placeholder="e.g. 1500" required />
+                </div>
+              </fieldset>
+
+              <div class="form-row">
+                <label for="donorName">Your name</label>
+                <input type="text" id="donorName" name="donorName" placeholder="Jane Cooper" required />
+              </div>
+              <div class="form-row">
+                <label for="donorEmail">Email</label>
+                <input type="email" id="donorEmail" name="donorEmail" placeholder="you@example.com" required />
+              </div>
+              <div class="form-row">
+                <label for="donorPhone">Phone <span class="muted">(optional)</span></label>
+                <input type="tel" id="donorPhone" name="donorPhone" placeholder="+91 98765 43210" />
+              </div>
+              <div class="form-row">
+                <label for="message">Message <span class="muted">(optional)</span></label>
+                <textarea id="message" name="message" rows="3" maxlength="500" placeholder="Add a note with your donation"></textarea>
+              </div>
+
+              <div id="donate-error" class="alert error" role="alert" hidden></div>
+
+              <button type="submit" id="donate-submit" class="btn btn-primary btn-lg btn-block">
+                Donate securely →
+              </button>
+              <p class="muted donate-secure-note">🔒 Payments are secured by Razorpay. We never store your card details.</p>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+  <% if (paymentsEnabled) { %>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="/donate.js"></script>
+  <% } %>
+</body>
+</html>

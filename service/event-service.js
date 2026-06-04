@@ -2,42 +2,79 @@ import { db } from "../config/db.js";
 import { eventsTable } from "../drizzle/schema.js";
 import { eq, and, desc, asc, gte, lt, count } from "drizzle-orm";
 import { uniqueSlug } from "../utils/slugify.js";
+import logger from "../utils/logger.js";
 
 export const createEvent = async (data) => {
-  const [event] = await db
-    .insert(eventsTable)
-    .values({ ...data, slug: uniqueSlug(data.title) })
-    .returning();
-  return event;
+  logger.info("Invoke createEvent method");
+  logger.info("Creating event with title: {}", data.title);
+  try {
+    const [event] = await db
+      .insert(eventsTable)
+      .values({ ...data, slug: uniqueSlug(data.title) })
+      .returning();
+    logger.info("Event created with id: {}", event.id);
+    return event;
+  } catch (error) {
+    logger.error("Error while executing createEvent", error);
+    throw error;
+  }
 };
 
 export const updateEvent = async (id, data) => {
-  const [event] = await db
-    .update(eventsTable)
-    .set(data)
-    .where(eq(eventsTable.id, id))
-    .returning();
-  return event;
+  logger.info("Invoke updateEvent method");
+  logger.info("Updating event id: {}", id);
+  try {
+    const [event] = await db
+      .update(eventsTable)
+      .set(data)
+      .where(eq(eventsTable.id, id))
+      .returning();
+    return event;
+  } catch (error) {
+    logger.error("Error while executing updateEvent", error);
+    throw error;
+  }
 };
 
 export const deleteEvent = async (id) => {
-  await db.delete(eventsTable).where(eq(eventsTable.id, id));
+  logger.info("Invoke deleteEvent method");
+  logger.info("Deleting event id: {}", id);
+  try {
+    await db.delete(eventsTable).where(eq(eventsTable.id, id));
+  } catch (error) {
+    logger.error("Error while executing deleteEvent", error);
+    throw error;
+  }
 };
 
 export const getEventById = async (id) => {
-  const [event] = await db
-    .select()
-    .from(eventsTable)
-    .where(eq(eventsTable.id, id));
-  return event;
+  logger.info("Invoke getEventById method");
+  logger.info("Fetching event by id: {}", id);
+  try {
+    const [event] = await db
+      .select()
+      .from(eventsTable)
+      .where(eq(eventsTable.id, id));
+    return event;
+  } catch (error) {
+    logger.error("Error while executing getEventById", error);
+    throw error;
+  }
 };
 
 export const getEventBySlug = async (slug) => {
-  const [event] = await db
-    .select()
-    .from(eventsTable)
-    .where(eq(eventsTable.slug, slug));
-  return event;
+  logger.info("Invoke getEventBySlug method");
+  logger.info("Fetching event by slug: {}", slug);
+  try {
+    const [event] = await db
+      .select()
+      .from(eventsTable)
+      .where(eq(eventsTable.slug, slug));
+    return event;
+  } catch (error) {
+    logger.error("Error while executing getEventBySlug", error);
+    throw error;
+  }
 };
 
 /**
@@ -46,9 +83,16 @@ export const getEventBySlug = async (slug) => {
  * (e.g. the gallery form's event dropdown needs every event).
  */
 export const getAllEvents = async ({ limit, offset = 0 } = {}) => {
-  let query = db.select().from(eventsTable).orderBy(desc(eventsTable.eventDate));
-  if (limit != null) query = query.limit(limit).offset(offset);
-  return query;
+  logger.info("Invoke getAllEvents method");
+  logger.info("Fetching events limit: {} offset: {}", limit, offset);
+  try {
+    let query = db.select().from(eventsTable).orderBy(desc(eventsTable.eventDate));
+    if (limit != null) query = query.limit(limit).offset(offset);
+    return await query;
+  } catch (error) {
+    logger.error("Error while executing getAllEvents", error);
+    throw error;
+  }
 };
 
 /** Predicate for published events whose date is still in the future. */
@@ -61,43 +105,75 @@ const pastWhere = () =>
 
 /** Published upcoming events (date in the future), soonest first. */
 export const getUpcomingEvents = async ({ limit, offset = 0 } = {}) => {
-  let query = db
-    .select()
-    .from(eventsTable)
-    .where(upcomingWhere())
-    .orderBy(asc(eventsTable.eventDate));
-  if (limit != null) query = query.limit(limit).offset(offset);
-  return query;
+  logger.info("Invoke getUpcomingEvents method");
+  logger.info("Fetching upcoming events limit: {} offset: {}", limit, offset);
+  try {
+    let query = db
+      .select()
+      .from(eventsTable)
+      .where(upcomingWhere())
+      .orderBy(asc(eventsTable.eventDate));
+    if (limit != null) query = query.limit(limit).offset(offset);
+    return await query;
+  } catch (error) {
+    logger.error("Error while executing getUpcomingEvents", error);
+    throw error;
+  }
 };
 
 /** Published past events (date in the past), most recent first. */
 export const getPastEvents = async ({ limit, offset = 0 } = {}) => {
-  let query = db
-    .select()
-    .from(eventsTable)
-    .where(pastWhere())
-    .orderBy(desc(eventsTable.eventDate));
-  if (limit != null) query = query.limit(limit).offset(offset);
-  return query;
+  logger.info("Invoke getPastEvents method");
+  logger.info("Fetching past events limit: {} offset: {}", limit, offset);
+  try {
+    let query = db
+      .select()
+      .from(eventsTable)
+      .where(pastWhere())
+      .orderBy(desc(eventsTable.eventDate));
+    if (limit != null) query = query.limit(limit).offset(offset);
+    return await query;
+  } catch (error) {
+    logger.error("Error while executing getPastEvents", error);
+    throw error;
+  }
 };
 
 export const countEvents = async () => {
-  const [row] = await db.select({ value: count() }).from(eventsTable);
-  return row?.value ?? 0;
+  logger.info("Invoke countEvents method");
+  try {
+    const [row] = await db.select({ value: count() }).from(eventsTable);
+    return row?.value ?? 0;
+  } catch (error) {
+    logger.error("Error while executing countEvents", error);
+    throw error;
+  }
 };
 
 export const countUpcomingEvents = async () => {
-  const [row] = await db
-    .select({ value: count() })
-    .from(eventsTable)
-    .where(upcomingWhere());
-  return row?.value ?? 0;
+  logger.info("Invoke countUpcomingEvents method");
+  try {
+    const [row] = await db
+      .select({ value: count() })
+      .from(eventsTable)
+      .where(upcomingWhere());
+    return row?.value ?? 0;
+  } catch (error) {
+    logger.error("Error while executing countUpcomingEvents", error);
+    throw error;
+  }
 };
 
 export const countPastEvents = async () => {
-  const [row] = await db
-    .select({ value: count() })
-    .from(eventsTable)
-    .where(pastWhere());
-  return row?.value ?? 0;
+  logger.info("Invoke countPastEvents method");
+  try {
+    const [row] = await db
+      .select({ value: count() })
+      .from(eventsTable)
+      .where(pastWhere());
+    return row?.value ?? 0;
+  } catch (error) {
+    logger.error("Error while executing countPastEvents", error);
+    throw error;
+  }
 };

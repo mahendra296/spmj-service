@@ -112,6 +112,57 @@ const logger = winston.createLogger({
   ],
 });
 
+/* ---------- SLF4J-style "{}" placeholder support ----------
+ * Lets services write: logger.info("Donor email: {}", email)
+ *                      logger.error("Error while executing createOrder", err)
+ * Each "{}" is replaced by the next argument; any leftover args become
+ * structured metadata (Error objects are serialised to message/stack/name).
+ * Calls without "{}" keep their existing behaviour, so nothing else breaks.
+ */
+const renderArg = (a) => {
+  if (a instanceof Error) return a.message;
+  if (a !== null && typeof a === "object") {
+    try {
+      return JSON.stringify(a);
+    } catch {
+      return String(a);
+    }
+  }
+  return String(a);
+};
+
+const wrapLevel = (fn) => (message, ...args) => {
+  if (typeof message !== "string" || args.length === 0) return fn(message, ...args);
+
+  let i = 0;
+  const text = message.replace(/\{\}/g, () => (i < args.length ? renderArg(args[i++]) : "{}"));
+
+  // Anything not consumed by a "{}" becomes metadata.
+  const leftover = args.slice(i);
+  const meta = {};
+  let hasMeta = false;
+  for (const a of leftover) {
+    if (a instanceof Error) {
+      meta.error = a.message;
+      meta.stack = a.stack;
+      meta.name = a.name;
+      hasMeta = true;
+    } else if (a !== null && typeof a === "object") {
+      Object.assign(meta, a);
+      hasMeta = true;
+    } else {
+      (meta.args ||= []).push(a);
+      hasMeta = true;
+    }
+  }
+  return hasMeta ? fn(text, meta) : fn(text);
+};
+
+for (const lvl of ["error", "warn", "info", "http", "debug"]) {
+  const original = logger[lvl].bind(logger);
+  logger[lvl] = wrapLevel(original);
+}
+
 // Stream for morgan integration
 logger.stream = {
   write: (message) => {

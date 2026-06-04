@@ -1,5 +1,7 @@
 import logger from "../utils/logger.js";
-import { getAllGalleryItems } from "../service/gallery-service.js";
+import { getAllGalleryItems, countGalleryItems } from "../service/gallery-service.js";
+import { parsePage, parsePageSize, pageSizeQuery, buildPagination } from "../utils/pagination.js";
+import { PAGE_SIZE_OPTIONS } from "../config/constant.js";
 
 const programs = [
   {
@@ -67,11 +69,27 @@ export const getAboutPage = async (req, res) => {
 
 export const getServicesPage = async (req, res) => {
   try {
-    const gallery = await getAllGalleryItems();
+    const pageSize = parsePageSize(req.query.size);
+    const totalCount = await countGalleryItems();
+    const pagination = buildPagination({
+      page: parsePage(req.query.page),
+      pageSize,
+      totalCount,
+      baseUrl: "/services",
+      query: pageSizeQuery(pageSize),
+      hash: "#gallery",
+    });
+    const gallery = await getAllGalleryItems({
+      limit: pageSize,
+      offset: pagination.offset,
+    });
     return res.render("services", {
       title: "Programs — SPMJ Foundation",
       page: "services",
       gallery,
+      pagination,
+      pageSize,
+      pageSizeOptions: PAGE_SIZE_OPTIONS,
     });
   } catch (error) {
     logger.logError(error, req);

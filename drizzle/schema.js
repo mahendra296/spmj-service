@@ -22,6 +22,14 @@ export const blogCategoryEnum = pgEnum("blog_category", [
 // Gallery media types
 export const mediaTypeEnum = pgEnum("media_type", ["image", "video"]);
 
+// Donation / payment lifecycle states
+export const paymentStatusEnum = pgEnum("payment_status", [
+  "created",
+  "paid",
+  "failed",
+  "refunded",
+]);
+
 export const usersTable = pgTable("users", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -121,6 +129,37 @@ export const galleryItemsTable = pgTable("gallery_items", {
   createdBy: integer("created_by").references(() => usersTable.id, {
     onDelete: "set null",
   }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+/**
+ * Donations — one row per donation attempt, created the moment a Razorpay
+ * order is opened. `status` starts at "created" and moves to "paid"/"failed"
+ * once the payment is verified (client callback) or confirmed (webhook).
+ *
+ * `amount` is stored in the smallest currency unit (paise for INR) to avoid
+ * floating-point money bugs — divide by 100 only for display.
+ */
+export const donationsTable = pgTable("donations", {
+  id: serial("id").primaryKey(),
+  // Our internal reference, also sent to Razorpay as the order receipt.
+  receipt: varchar("receipt", { length: 40 }).notNull().unique(),
+  donorName: varchar("donor_name", { length: 255 }).notNull(),
+  donorEmail: varchar("donor_email", { length: 255 }).notNull(),
+  donorPhone: varchar("donor_phone", { length: 20 }),
+  message: varchar("message", { length: 500 }),
+  amount: integer("amount").notNull(), // paise
+  currency: varchar("currency", { length: 3 }).default("INR").notNull(),
+  status: paymentStatusEnum("status").default("created").notNull(),
+  razorpayOrderId: varchar("razorpay_order_id", { length: 255 })
+    .notNull()
+    .unique(),
+  razorpayPaymentId: varchar("razorpay_payment_id", { length: 255 }),
+  razorpaySignature: varchar("razorpay_signature", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

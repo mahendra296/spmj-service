@@ -25,8 +25,8 @@ tokens**, **role-based access control**, and **argon2**-hashed passwords.
 
 - Connection: set `POSTGRES_DATABASE_URL` in `.env`.
 - Schema: `drizzle/schema.js` — `users` (role `ROLE_ADMIN` / `ROLE_USER`),
-  `refresh_tokens` (one row per signed-in session), plus the content tables
-  `events`, `blog_posts`, and `gallery_items`.
+  `refresh_tokens` (one row per signed-in session), the content tables
+  `events`, `blog_posts`, and `gallery_items`, plus `donations` (Razorpay).
 - Tokens: a short-lived `access_token` and long-lived `refresh_token` are stored
   as **httpOnly cookies**. `verifyAuthToken` (in `middlewares/verify-auth-middleware.js`)
   validates the access token on every request and silently refreshes it from the
@@ -43,11 +43,12 @@ tokens**, **role-based access control**, and **argon2**-hashed passwords.
 
 Signed-in admins manage all site content from `/admin/dashboard`:
 
-| Section | Manage at        | Public page                |
-|---------|------------------|----------------------------|
-| Events  | `/admin/events`  | `/events`, `/events/:slug` |
-| Blog    | `/admin/blog`    | `/blog`, `/blog/:slug`     |
-| Gallery | `/admin/gallery` | `/gallery`                 |
+| Section   | Manage at           | Public page                |
+|-----------|---------------------|----------------------------|
+| Events    | `/admin/events`     | `/events`, `/events/:slug` |
+| Blog      | `/admin/blog`       | `/blog`, `/blog/:slug`     |
+| Gallery   | `/admin/gallery`    | `/gallery`                 |
+| Donations | `/admin/donations`  | `/donate`                  |
 
 - Full create / edit / delete for each type, guarded by `requireAdmin`.
 - **Gallery** accepts an uploaded image/video **or** an external URL (e.g. YouTube).
@@ -66,6 +67,37 @@ Seeded demo accounts (override via `ADMIN_*` / `USER_*` in `.env`):
 Other DB commands: `npm run db:push` (push schema without migration files),
 `npm run db:studio` (open Drizzle Studio).
 
+## Donations (Razorpay)
+
+Public, secure one-time donations are processed by **Razorpay**.
+
+- **Setup**: create a Razorpay account, then add to `.env`:
+  `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and `RAZORPAY_WEBHOOK_SECRET`.
+  Use **test-mode** keys while developing. If the keys are absent the app still
+  boots and `/donate` shows a friendly "temporarily unavailable" notice.
+- **Donor flow** (`/donate`): pick a preset (₹500 / ₹1,000 / ₹2,500 / ₹5,000) or
+  enter a custom amount, then pay via Razorpay Checkout. On success the donor
+  lands on a thank-you page (`/donate/success`).
+- **How it works**:
+  1. `POST /donate/order` validates the form and creates a Razorpay **order**
+     server-side (the order amount is authoritative — the client can't change
+     what's charged) plus a `donations` row with status `created`.
+  2. Razorpay Checkout collects payment in the browser (`public/donate.js`).
+  3. `POST /donate/verify` verifies the **HMAC-SHA256 signature** of the callback
+     before marking the donation `paid`.
+  4. `POST /donate/webhook` is the server-to-server **source of truth** — it
+     verifies the webhook signature against the raw request body and reconciles
+     `payment.captured` / `order.paid` / `payment.failed`. Status updates are
+     **idempotent**, so the callback and webhook can't double-process.
+- **Money** is stored in **paise** (integer) in `donations.amount` to avoid
+  float bugs; divide by 100 only for display.
+- **Admin** (`/admin/donations`, ROLE_ADMIN): read-only paginated list with
+  headline stats (total raised, successful count) and a **Download CSV** export.
+- **Webhook setup**: in the Razorpay dashboard add a webhook pointing at
+  `https://<your-host>/donate/webhook` for the `payment.captured`,
+  `payment.failed`, and `order.paid` events, using the same secret as
+  `RAZORPAY_WEBHOOK_SECRET`.
+
 ## Pages
 
 - `/` — Home (mission, programs, impact, stories)
@@ -74,6 +106,7 @@ Other DB commands: `npm run db:push` (push schema without migration files),
 - `/events` — Upcoming & past events (detail at `/events/:slug`)
 - `/gallery` — Photos and videos from events/camps
 - `/blog` — Articles, press coverage, announcements (detail at `/blog/:slug`)
-- `/contact` — Get in touch / donate / volunteer
+- `/contact` — Get in touch / volunteer
+- `/donate` — Make a secure donation via Razorpay (thank-you at `/donate/success`)
 - `/admin/login` — Admin console (demo credentials in `.env`)
-- `/admin/dashboard` — Manage events, blog posts, and gallery (ROLE_ADMIN only)
+- `/admin/dashboard` — Manage events, blog posts, gallery, and donations (ROLE_ADMIN only)
