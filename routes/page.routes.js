@@ -136,4 +136,11 @@ router.post("/admin/gallery/:id/delete", named("pri_post_gallery_delete"), requi
 router.get("/admin/donations", named("pri_get_donations"), requireAdmin, donationController.listDonationsAdmin);
 router.get("/admin/donations/export", named("pri_get_donations_export"), requireAdmin, donationController.exportDonationsCsv);
 
+/* ---------- Admin: Contact messages (ROLE_ADMIN, read-only + delete) ---------- */
+router.get("/admin/contact", named("pri_get_contact"), requireAdmin, contactController.listContactAdmin);
+router.post("/admin/contact/:id/delete", named("pri_post_contact_delete"), requireAdmin, contactController.deleteContactAdmin);
+
+/* ---------- Donation receipt lookup ---------- */
+router.get("/receipt", named("pub_get_receipt"), donationController.getReceiptLookupPage);
+
 export const pageRouter = router;

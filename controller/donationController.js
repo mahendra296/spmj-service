@@ -22,7 +22,7 @@ import {
   buildReceipt,
   verifyPaymentSignature,
   verifyWebhookSignature,
-  formatPaiseINR,
+  formatRupees,
 } from "../utils/payments.js";
 import {
   DONATION_PRESETS,
@@ -71,9 +71,11 @@ export const createOrder = async (req, res) => {
   try {
     // A unique, ≤40-char receipt: base36 timestamp + random bytes.
     const seed = `${Date.now().toString(36)}${crypto.randomBytes(4).toString("hex")}`;
+    const amountPaise = rupeesToPaise(amount);
     const donation = await createDonationOrder({
       receipt: buildReceipt(seed),
-      amountPaise: rupeesToPaise(amount),
+      amount,
+      amountPaise,
       donorName,
       donorEmail,
       donorPhone,
@@ -85,7 +87,9 @@ export const createOrder = async (req, res) => {
         {
           keyId: razorpayKeyId,
           orderId: donation.razorpayOrderId,
-          amount: donation.amount,
+          // Paise, not donation.amount (rupees) — the Razorpay Checkout widget
+          // must receive the same smallest-unit amount the order was created with.
+          amount: amountPaise,
           currency: donation.currency,
           receipt: donation.receipt,
           donor: { name: donorName, email: donorEmail, phone: donorPhone || "" },
@@ -157,7 +161,39 @@ export const getDonationSuccessPage = async (req, res, next) => {
       title: "Thank you — SPMJ Foundation",
       page: "donate",
       donation,
-      amountDisplay: formatPaiseINR(donation.amount, donation.currency),
+      amountDisplay: formatRupees(donation.amount, donation.currency),
+    });
+  } catch (error) {
+    logger.logError(error, req);
+    return res.status(500).send("Internal server error.");
+  }
+};
+
+/* ---------- Public: find a receipt by reference number ---------- */
+
+export const getReceiptLookupPage = async (req, res) => {
+  try {
+    const ref = req.query.ref;
+    let donation = null;
+    let amountDisplay = null;
+    let lookupError = null;
+
+    if (ref) {
+      donation = await getDonationByReceipt(ref);
+      if (donation) {
+        amountDisplay = formatRupees(donation.amount, donation.currency);
+      } else {
+        lookupError = "Could not find a receipt for that reference number.";
+      }
+    }
+
+    return res.render("receipt", {
+      title: "Find your receipt — SPMJ Foundation",
+      page: "receipt",
+      ref: ref || "",
+      donation,
+      amountDisplay,
+      lookupError,
     });
   } catch (error) {
     logger.logError(error, req);
@@ -232,7 +268,7 @@ export const listDonationsAdmin = async (req, res) => {
       pageSize,
       pageSizeOptions: PAGE_SIZE_OPTIONS,
       stats,
-      fmt: formatPaiseINR,
+      fmt: formatRupees,
     });
   } catch (error) {
     logger.logError(error, req);
@@ -271,7 +307,7 @@ export const exportDonationsCsv = async (req, res) => {
           r.donorName,
           r.donorEmail,
           r.donorPhone || "",
-          (r.amount / 100).toFixed(2),
+          Number(r.amount).toFixed(2),
           r.currency,
           r.status,
           r.razorpayOrderId,

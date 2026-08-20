@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Find and download your SPMJ Foundation donation receipt using your reference number." />
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Receipts</span>
+        <h1 class="display">Find your <span class="grad">donation receipt</span>.</h1>
+        <p class="lead">Enter the reference number from your donation confirmation to view or download your receipt.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container" style="max-width:480px;margin:0 auto;">
+        <form action="/receipt" method="GET" class="contact-form" novalidate>
+          <div class="form-row">
+            <label for="ref">Reference number</label>
+            <input type="text" id="ref" name="ref" placeholder="don_xxxxxxxxxxxxxxxx" value="<%= ref %>" required />
+            <% if (lookupError) { %><span class="error"><%= lookupError %></span><% } %>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg">Find receipt →</button>
+        </form>
+      </div>
+    </section>
+
+    <% if (donation) { %>
+      <section class="section">
+        <div class="container">
+          <%- include('partials/donation-receipt', { donation, amountDisplay, variant: 'lookup' }) %>
+        </div>
+      </section>
+    <% } %>
+  </main>
+
+  <%- include('footer') %>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="/receipt.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>

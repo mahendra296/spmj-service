@@ -45,8 +45,9 @@ export const PAGE_SIZE_OPTIONS = [5, 10, 25, 50];
 
 /* ---------- Donations (Razorpay) ---------- */
 
-// Currency for donations (ISO 4217). Razorpay amounts are in the smallest
-// unit (paise for INR), so every amount in the DB is stored in paise.
+// Currency for donations (ISO 4217). The DB stores amounts in rupees
+// (decimal); Razorpay's API always wants paise, converted only at the point
+// of calling Razorpay (see utils/payments.js `rupeesToPaise`).
 export const DONATION_CURRENCY = "INR";
 
 // Preset amounts shown as quick-pick buttons, in major units (rupees).

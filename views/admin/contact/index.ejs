@@ -1,0 +1,56 @@
+<%- include('../head', { title, active: 'contact' }) %>
+
+    <div class="admin-list-head">
+      <div>
+        <span class="eyebrow">Contact</span>
+        <h1>Contact messages</h1>
+      </div>
+      <div class="admin-list-actions">
+        <%- include('../../partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/admin/contact', pageSizeQuery: {} }) %>
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <% if (submissions.length === 0) { %>
+        <p class="muted">No messages yet.</p>
+      <% } else { %>
+        <div class="table-scroll">
+          <table class="data-table data-table-rich">
+            <thead>
+              <tr>
+                <th>From</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% submissions.forEach((s) => { %>
+                <tr>
+                  <td>
+                    <span class="table-title"><%= s.name %></span>
+                    <span class="muted nowrap"><a href="mailto:<%= s.email %>"><%= s.email %></a></span>
+                  </td>
+                  <td style="max-width:420px;white-space:pre-wrap;"><%= s.message %></td>
+                  <td class="nowrap"><%= new Date(s.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                  <td class="col-actions">
+                    <div class="table-actions">
+                      <form action="/admin/contact/<%= s.id %>/delete" method="POST" onsubmit="return confirm('Delete this message?');">
+                        <button type="submit" class="icon-btn danger" title="Delete" aria-label="Delete">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14ZM10 11v6M14 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <%- include('../../partials/pagination', { pagination }) %>
+      <% } %>
+    </div>
+
+<%- include('../foot') %>

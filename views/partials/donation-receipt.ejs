@@ -1,0 +1,44 @@
+<%
+  /* Shared donation-receipt card. Expects: donation, amountDisplay,
+     variant ('success' | 'lookup', defaults to 'success'). */
+  const _variant = typeof variant !== 'undefined' ? variant : 'success';
+  const isPaid = donation.status === 'paid';
+%>
+<div class="donate-receipt">
+  <div class="donate-receipt-icon <%= isPaid ? 'is-paid' : 'is-pending' %>"><%= isPaid ? '✓' : '⏳' %></div>
+
+  <% if (_variant === 'success') { %>
+    <% if (isPaid) { %>
+      <h1>Thank you, <%= donation.donorName %>!</h1>
+      <p class="lead">Your donation of <strong><%= amountDisplay %></strong> has been received. You're helping a child stay in school.</p>
+    <% } else { %>
+      <h1>Payment is being confirmed</h1>
+      <p class="lead">Thanks, <%= donation.donorName %>. Your donation of <strong><%= amountDisplay %></strong> is processing — we'll email you once it's confirmed.</p>
+    <% } %>
+  <% } else { %>
+    <h1>Donation receipt</h1>
+    <p class="lead">Here's the record for <strong><%= donation.receipt %></strong>.</p>
+  <% } %>
+
+  <dl class="donate-receipt-meta">
+    <div><dt>Reference</dt><dd><%= donation.receipt %></dd></div>
+    <div><dt>Amount</dt><dd><%= amountDisplay %></dd></div>
+    <div><dt>Status</dt><dd><span class="badge badge-<%= isPaid ? 'upcoming' : 'draft' %>"><%= donation.status %></span></dd></div>
+    <div><dt>Date</dt><dd><%= new Date(donation.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></dd></div>
+  </dl>
+
+  <p class="muted">A receipt has been recorded against your email, <%= donation.donorEmail %>.</p>
+
+  <div class="donate-receipt-actions">
+    <% if (isPaid) { %>
+      <button type="button" class="btn btn-ghost" data-receipt-download
+        data-donation='<%= JSON.stringify(donation) %>' data-amount-display="<%= amountDisplay %>">
+        ↓ Download receipt (PDF)
+      </button>
+    <% } else { %>
+      <span class="muted">A downloadable receipt will be available once payment is confirmed.</span>
+    <% } %>
+    <a href="/" class="btn btn-ghost">Back to home</a>
+    <a href="/donate" class="btn btn-primary">Donate again</a>
+  </div>
+</div>

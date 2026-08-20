@@ -57,13 +57,6 @@ Signed-in admins manage all site content from `/admin/dashboard`:
 - **Events** are split into upcoming/past on the public page by their date.
 - **Blog** posts are categorised as `article`, `press`, or `announcement`.
 
-Seeded demo accounts (override via `ADMIN_*` / `USER_*` in `.env`):
-
-| Role        | Email                        | Password   |
-|-------------|------------------------------|------------|
-| ROLE_ADMIN  | admin@spmjfoundation.org     | Admin@123  |
-| ROLE_USER   | user@spmjfoundation.org      | User@123   |
-
 Other DB commands: `npm run db:push` (push schema without migration files),
 `npm run db:studio` (open Drizzle Studio).
 

@@ -129,6 +129,12 @@ ul { padding: 0; margin: 0; list-style: none; }
 }
 .brand:hover { color: var(--ink); }
 .brand-mark { line-height: 1; }
+.brand-logo {
+  height: 44px;
+  width: auto;
+  display: block;
+  border-radius: 50%;
+}
 .brand-dot {
   width: 8px;
   height: 8px;

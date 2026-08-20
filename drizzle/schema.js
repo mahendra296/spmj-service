@@ -3,6 +3,7 @@ import {
   pgEnum,
   serial,
   integer,
+  numeric,
   varchar,
   text,
   boolean,
@@ -141,8 +142,10 @@ export const galleryItemsTable = pgTable("gallery_items", {
  * order is opened. `status` starts at "created" and moves to "paid"/"failed"
  * once the payment is verified (client callback) or confirmed (webhook).
  *
- * `amount` is stored in the smallest currency unit (paise for INR) to avoid
- * floating-point money bugs — divide by 100 only for display.
+ * `amount` is stored in rupees (decimal, 2 places) — the natural unit for
+ * display and reporting. Razorpay's API always deals in paise (the smallest
+ * currency unit), so the conversion happens only at the point of calling
+ * Razorpay (see utils/payments.js `rupeesToPaise`) — never in this table.
  */
 export const donationsTable = pgTable("donations", {
   id: serial("id").primaryKey(),
@@ -152,7 +155,7 @@ export const donationsTable = pgTable("donations", {
   donorEmail: varchar("donor_email", { length: 255 }).notNull(),
   donorPhone: varchar("donor_phone", { length: 20 }),
   message: varchar("message", { length: 500 }),
-  amount: integer("amount").notNull(), // paise
+  amount: numeric("amount", { precision: 12, scale: 2, mode: "number" }).notNull(), // rupees
   currency: varchar("currency", { length: 3 }).default("INR").notNull(),
   status: paymentStatusEnum("status").default("created").notNull(),
   razorpayOrderId: varchar("razorpay_order_id", { length: 255 })
@@ -165,4 +168,15 @@ export const donationsTable = pgTable("donations", {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
+});
+
+/**
+ * Contact form submissions — one row per message sent via /contact.
+ */
+export const contactSubmissionsTable = pgTable("contact_submissions", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
