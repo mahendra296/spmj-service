@@ -1,0 +1,56 @@
+export const MILLISECONDS_PER_SECOND = 1000;
+export const SECONDS_PER_MINUTE = 60;
+export const MINUTE_PER_HOUR = 60;
+export const HOUR_PER_DAY = 24;
+export const DAY_PER_WEEK = 7;
+
+// JWT access token: short-lived (15 minutes)
+export const ACCESS_TOKEN_EXPIRY =
+  15 * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+
+// JWT refresh token: long-lived (7 days)
+export const REFRESH_TOKEN_EXPIRY =
+  DAY_PER_WEEK *
+  HOUR_PER_DAY *
+  MINUTE_PER_HOUR *
+  SECONDS_PER_MINUTE *
+  MILLISECONDS_PER_SECOND;
+
+// Role-based access control
+export const ROLES = {
+  ADMIN: "ROLE_ADMIN",
+  USER: "ROLE_USER",
+};
+
+// Blog / News categories
+export const BLOG_CATEGORIES = ["article", "press", "announcement"];
+
+// Gallery media types
+export const MEDIA_TYPES = ["image", "video"];
+
+// Upload limits
+export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+export const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+
+// Pagination — items per page (chosen from the UI dropdown)
+export const DEFAULT_PAGE_SIZE = 5;
+export const PAGE_SIZE_OPTIONS = [5, 10, 25, 50];
+
+/* ---------- Donations (Razorpay) ---------- */
+
+// Currency for donations (ISO 4217). Razorpay amounts are in the smallest
+// unit (paise for INR), so every amount in the DB is stored in paise.
+export const DONATION_CURRENCY = "INR";
+
+// Preset amounts shown as quick-pick buttons, in major units (rupees).
+export const DONATION_PRESETS = [500, 1000, 2500, 5000];
+
+// Bounds for the custom amount (major units / rupees).
+export const DONATION_MIN_AMOUNT = 10; // Razorpay's floor is ₹1; we keep ₹10.
+export const DONATION_MAX_AMOUNT = 500000; // ₹5,00,000 sanity cap.
+
+// Payment lifecycle states (mirrors paymentStatusEnum in the schema).
+export const PAYMENT_STATUSES = ["created", "paid", "failed", "refunded"];
+
+// One rupee = 100 paise.
+export const PAISE_PER_RUPEE = 100;

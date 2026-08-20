@@ -1,112 +1,208 @@
 # SPMJ Foundation
 
-Website for **SPMJ Foundation**, an educational non-profit working to bring free,
-quality education to underprivileged children through schooling, after-school
-learning, digital & STEM labs, scholarships, and child welfare programs.
+Website for **SPMJ Foundation**, an educational non-profit — built as a
+**React (Vite + TypeScript)** frontend and a **Node.js (Express) JSON API**
+backend.
 
-Built with Node.js, Express, and EJS templates.
+## Project structure
 
-## Getting started
+```
+spmj-service/
+  Backend/     Express JSON API — auth, content, donations, the Postgres/Drizzle data layer
+  Frontend/    React UI — public site + admin console, talks to the Backend over /api
+  start.bat    Launches both dev servers (Windows)
+  stop.bat     Stops both dev servers (Windows)
+```
+
+### Backend (`Backend/`)
+
+```
+Backend/
+  index.js                          # entry point — wires middleware, mounts routers, starts the server
+  config/
+    constant.js                     # app constants (roles, token expiries, pagination, donation limits)
+    db.js                           # drizzle-orm/postgres-js connection
+    razorpay.js                     # Razorpay client + isPaymentsConfigured()
+  drizzle/
+    schema.js                       # users, refresh_tokens, events, blog_posts, gallery_items, donations
+    seed.js                         # creates the admin + user accounts, sample content
+    migrations/
+  routes/                           # one file per resource, each exporting a public + admin sub-router
+  controller/                       # request handling — every response uses the ApiResponse envelope
+  service/                          # DB access (Drizzle queries)
+  middlewares/
+    verify-auth-middleware.js       # JWT cookie auth (soft) + requireAuth/requireRole/requireAdmin guards
+    upload-middleware.js            # multer (disk storage, public/uploads/{events,blog,gallery}/)
+    error-handler.js                # errorHandler, notFoundHandler, asyncHandler — all JSON
+    http-logger.js, metrics-middleware.js
+  utils/
+    api-response.js                 # ApiResponse — { success, message, data, timestamp }
+    pagination.js                   # parsePage/parsePageSize/buildPagination/toPaginationMeta
+    zod-errors.js                   # fieldErrors(validation) — flattens Zod issues to { field: message }
+    payments.js                     # Razorpay signature verification, paise/rupee conversion
+    logger.js, metrics.js, slugify.js
+  validators/                       # Zod schemas + env.js
+```
+
+### Frontend (`Frontend/`)
+
+```
+Frontend/
+  src/
+    main.tsx                        # BrowserRouter + AuthProvider root
+    App.tsx                         # route table (public layout, admin login layout, protected admin layout)
+    constants.ts                    # UI-only constants (slider timing, static Programs list, page sizes)
+    types.ts                        # TS types mirroring the Backend's response shapes
+    api/                            # one module per resource + client.ts (fetch wrapper, unwraps ApiResponse)
+    context/AuthContext.tsx         # current user, login/logout/refresh (GET /api/auth/me on load)
+    layout/                         # PublicLayout, AdminLayout, AdminLoginLayout
+    components/                     # Header, Footer, HeroSlider, Pagination, PageSizeSelect,
+                                     #   EventCard, ContentCard, GalleryGrid, RowActions, Toast, ProtectedRoute
+    hooks/                          # usePagedList (page/pageSize state + fetch), useScrollReveal
+    pages/
+      public/                       # Home, About, Services, Events, EventDetail, Blog, BlogDetail,
+                                     #   Gallery, Contact, Donate, DonateSuccess, NotFound
+      admin/                        # Login, Dashboard, {Events,Blog,Gallery}ListAdmin + Form, DonationsListAdmin
+    styles/style.css                # ported near-verbatim from the original site (design tokens + component classes)
+  public/images/                    # hero slider background SVGs
+  vite.config.ts                    # dev server + /api and /uploads proxy to the Backend
+```
+
+## Prerequisites
+
+- Node.js 22+ (uses `--watch` and `--env-file`)
+- PostgreSQL
+
+## Running the backend
 
 ```bash
+cd Backend
+cp .env.example .env   # then fill in real secrets
 npm install
-npm run db:generate   # generate SQL migration from drizzle/schema.js
-npm run db:migrate    # apply migrations to PostgreSQL
-npm run db:seed       # create the admin + user accounts
+npm run db:migrate
+npm run db:seed        # creates the admin + user accounts
 npm run dev
 ```
 
-The site runs at `http://localhost:3000` (configurable via `PORT` in `.env`).
+- Starts on `http://localhost:5000` (reads `PORT` from `Backend/.env`).
+- Other scripts: `npm start` (same as `dev`), `npm run debug` (adds `--inspect`),
+  `npm run db:generate` / `db:push` / `db:studio`.
+- Logs are written to `Backend/logs/` as well as the console.
 
-## Authentication & database
+## Running the frontend
 
-Login is backed by **PostgreSQL** (via Drizzle ORM) with **JWT access + refresh
-tokens**, **role-based access control**, and **argon2**-hashed passwords.
+Open a second terminal:
 
-- Connection: set `POSTGRES_DATABASE_URL` in `.env`.
-- Schema: `drizzle/schema.js` — `users` (role `ROLE_ADMIN` / `ROLE_USER`),
-  `refresh_tokens` (one row per signed-in session), the content tables
-  `events`, `blog_posts`, and `gallery_items`, plus `donations` (Razorpay).
-- Tokens: a short-lived `access_token` and long-lived `refresh_token` are stored
-  as **httpOnly cookies**. `verifyAuthToken` (in `middlewares/verify-auth-middleware.js`)
-  validates the access token on every request and silently refreshes it from the
-  refresh token when it expires. The role is embedded in the access token.
-- Sessions: each login creates a `refresh_tokens` row; an in-memory cache
-  (`service/session-cache.js`) gives O(1) validity checks so **logout takes effect
-  immediately**. The cache is warmed from the DB on startup.
-- Set `JWT_SECRET` and `REFRESH_TOKEN_SECRET` in `.env`. Cookies are only marked
-  `secure` when `NODE_ENV=production` (so login works over `http://localhost`).
-- Roles are enforced by `requireRole(...)` / `requireAdmin`. Login is by **email**.
-  Only `ROLE_ADMIN` users may open the `/admin/*` management pages.
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+- Starts on `http://localhost:5173`.
+- Requests to `/api/*` and `/uploads/*` are proxied to the Backend at
+  `http://localhost:5000` (see `Frontend/vite.config.ts`), so the Backend must
+  be running first.
+
+Or on Windows, run `start.bat` from the repo root to launch both at once
+(`stop.bat` to stop them).
+
+## Authentication
+
+httpOnly cookie-based JWT auth (`access_token` 15 min, `refresh_token` 7
+days), `sameSite: "lax"` so the cookies ride along on the Frontend's
+credentialed cross-origin requests during development. The Backend allows
+CORS only from `FRONTEND_ORIGIN` with `credentials: true`. Sessions are
+tracked in the `refresh_tokens` table (one row per signed-in device); an
+in-memory cache gives O(1) validity checks so logout takes effect
+immediately, warmed from the DB on Backend startup.
+
+Seeded demo accounts (override via `ADMIN_*` / `USER_*` in `Backend/.env`):
+
+| Role        | Email                             | Password   |
+|-------------|------------------------------------|------------|
+| ROLE_ADMIN  | admin@sahayogpragatimandal.org     | Admin@123  |
+| ROLE_USER   | user@sahayogpragatimandal.org      | User@123   |
 
 ## Content management (admin only)
 
 Signed-in admins manage all site content from `/admin/dashboard`:
 
 | Section   | Manage at           | Public page                |
-|-----------|---------------------|----------------------------|
-| Events    | `/admin/events`     | `/events`, `/events/:slug` |
-| Blog      | `/admin/blog`       | `/blog`, `/blog/:slug`     |
-| Gallery   | `/admin/gallery`    | `/gallery`                 |
-| Donations | `/admin/donations`  | `/donate`                  |
+|-----------|---------------------|-----------------------------|
+| Events    | `/admin/events`     | `/events`, `/events/:slug`  |
+| Blog      | `/admin/blog`       | `/blog`, `/blog/:slug`      |
+| Gallery   | `/admin/gallery`    | `/gallery`, `/services#gallery` |
+| Donations | `/admin/donations`  | `/donate`                   |
 
-- Full create / edit / delete for each type, guarded by `requireAdmin`.
+- Full create / edit / delete for each type, guarded server-side by `requireAdmin`.
 - **Gallery** accepts an uploaded image/video **or** an external URL (e.g. YouTube).
-  Uploads use `multer` (`middlewares/upload-middleware.js`) and are stored under
-  `public/uploads/` (git-ignored).
+  Uploads use `multer` and are stored under `Backend/public/uploads/` (git-ignored).
 - **Events** are split into upcoming/past on the public page by their date.
 - **Blog** posts are categorised as `article`, `press`, or `announcement`.
-
-Seeded demo accounts (override via `ADMIN_*` / `USER_*` in `.env`):
-
-| Role        | Email                        | Password   |
-|-------------|------------------------------|------------|
-| ROLE_ADMIN  | admin@spmjfoundation.org     | Admin@123  |
-| ROLE_USER   | user@spmjfoundation.org      | User@123   |
-
-Other DB commands: `npm run db:push` (push schema without migration files),
-`npm run db:studio` (open Drizzle Studio).
 
 ## Donations (Razorpay)
 
 Public, secure one-time donations are processed by **Razorpay**.
 
-- **Setup**: create a Razorpay account, then add to `.env`:
+- **Setup**: create a Razorpay account, then add to `Backend/.env`:
   `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, and `RAZORPAY_WEBHOOK_SECRET`.
-  Use **test-mode** keys while developing. If the keys are absent the app still
-  boots and `/donate` shows a friendly "temporarily unavailable" notice.
-- **Donor flow** (`/donate`): pick a preset (₹500 / ₹1,000 / ₹2,500 / ₹5,000) or
-  enter a custom amount, then pay via Razorpay Checkout. On success the donor
-  lands on a thank-you page (`/donate/success`).
+  Use **test-mode** keys while developing. If the keys are absent the Backend
+  still boots and `/api/donations/config` reports `paymentsEnabled: false`.
+- **Donor flow** (`/donate`): pick a preset (₹500 / ₹1,000 / ₹2,500 / ₹5,000)
+  or enter a custom amount, then pay via Razorpay Checkout. On success the
+  donor lands on `/donate/success?ref=<receipt>`.
 - **How it works**:
-  1. `POST /donate/order` validates the form and creates a Razorpay **order**
-     server-side (the order amount is authoritative — the client can't change
-     what's charged) plus a `donations` row with status `created`.
-  2. Razorpay Checkout collects payment in the browser (`public/donate.js`).
-  3. `POST /donate/verify` verifies the **HMAC-SHA256 signature** of the callback
-     before marking the donation `paid`.
-  4. `POST /donate/webhook` is the server-to-server **source of truth** — it
-     verifies the webhook signature against the raw request body and reconciles
-     `payment.captured` / `order.paid` / `payment.failed`. Status updates are
-     **idempotent**, so the callback and webhook can't double-process.
-- **Money** is stored in **paise** (integer) in `donations.amount` to avoid
-  float bugs; divide by 100 only for display.
-- **Admin** (`/admin/donations`, ROLE_ADMIN): read-only paginated list with
-  headline stats (total raised, successful count) and a **Download CSV** export.
-- **Webhook setup**: in the Razorpay dashboard add a webhook pointing at
-  `https://<your-host>/donate/webhook` for the `payment.captured`,
-  `payment.failed`, and `order.paid` events, using the same secret as
-  `RAZORPAY_WEBHOOK_SECRET`.
+  1. `POST /api/donations/order` validates the form and creates a Razorpay
+     **order** server-side (the order amount is authoritative) plus a
+     `donations` row with status `created`.
+  2. Razorpay Checkout collects payment in the browser.
+  3. `POST /api/donations/verify` verifies the **HMAC-SHA256 signature** of
+     the callback before marking the donation `paid`.
+  4. `POST /api/donations/webhook` is the server-to-server **source of
+     truth** — verifies the webhook signature against the raw request body
+     and reconciles `payment.captured` / `order.paid` / `payment.failed`.
+     Status updates are **idempotent**.
+- **Money** is stored in **paise** (integer) in `donations.amount`; the
+  Frontend formats for display.
+- **Admin** (`/admin/donations`): read-only paginated list with headline
+  stats and a **Download CSV** export (`GET /api/admin/donations/export.csv`
+  — a plain link, since Backend and Frontend share an origin via the dev
+  proxy / a single reverse proxy in production).
 
-## Pages
+## API
 
-- `/` — Home (mission, programs, impact, stories)
-- `/about` — Mission, vision, story, and values
-- `/services` — Programs and ways to give
-- `/events` — Upcoming & past events (detail at `/events/:slug`)
-- `/gallery` — Photos and videos from events/camps
-- `/blog` — Articles, press coverage, announcements (detail at `/blog/:slug`)
-- `/contact` — Get in touch / volunteer
-- `/donate` — Make a secure donation via Razorpay (thank-you at `/donate/success`)
-- `/admin/login` — Admin console (demo credentials in `.env`)
-- `/admin/dashboard` — Manage events, blog posts, gallery, and donations (ROLE_ADMIN only)
+All responses use the envelope `{ success, message, data, timestamp }`
+(`Backend/utils/api-response.js`). Validation failures return
+`data.errors: { field: message }`.
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/api/auth/login` | — | sets cookies |
+| POST | `/api/auth/logout` | — | clears cookies |
+| POST | `/api/auth/refresh` | cookie | |
+| GET | `/api/auth/me` | — | current user or `{ user: null }` |
+| GET | `/api/admin/dashboard` | admin | |
+| GET | `/api/events` | — | `?upPage=&pastPage=&size=` |
+| GET | `/api/events/:slug` | — | |
+| */api/admin/events[/:id]* | admin | full CRUD |
+| GET | `/api/blog` | — | `?page=&size=` |
+| GET | `/api/blog/:slug` | — | |
+| */api/admin/blog[/:id]* | admin | full CRUD |
+| GET | `/api/gallery` | — | `?page=&size=` |
+| */api/admin/gallery[/:id]* | admin | full CRUD |
+| GET | `/api/admin/meta/events` | admin | dropdown data for the gallery form |
+| GET | `/api/donations/config` | — | |
+| POST | `/api/donations/order` | — | |
+| POST | `/api/donations/verify` | — | |
+| POST | `/api/donations/webhook` | — (HMAC) | server-to-server |
+| GET | `/api/donations/receipt/:ref` | — | |
+| GET | `/api/admin/donations` | admin | `?page=&size=` |
+| GET | `/api/admin/donations/export.csv` | admin | CSV download |
+| POST | `/api/contact` | — | logged, not persisted |
+
+## Environment variables (`Backend/.env`)
+
+See `Backend/.env.example`. Notable: `FRONTEND_ORIGIN` (CORS allow-list),
+`JWT_SECRET` / `REFRESH_TOKEN_SECRET`, `POSTGRES_DATABASE_URL`,
+`RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` / `RAZORPAY_WEBHOOK_SECRET`.

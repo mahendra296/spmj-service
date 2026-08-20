@@ -91,6 +91,7 @@ dist
 
 # Uploaded media (user-generated; keep the folder structure out of git)
 public/uploads/
+Backend/public/uploads/
 
 # vuepress build output
 .vuepress/dist
