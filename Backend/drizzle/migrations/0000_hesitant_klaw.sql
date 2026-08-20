@@ -1,5 +1,7 @@
 CREATE TYPE "public"."blog_category" AS ENUM('article', 'press', 'announcement');--> statement-breakpoint
 CREATE TYPE "public"."media_type" AS ENUM('image', 'video');--> statement-breakpoint
+CREATE TYPE "public"."payment_status" AS ENUM('created', 'paid', 'failed', 'refunded');--> statement-breakpoint
+CREATE TYPE "public"."user_role" AS ENUM('ROLE_ADMIN', 'ROLE_USER');--> statement-breakpoint
 CREATE TABLE "blog_posts" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar(255) NOT NULL,
@@ -15,6 +17,25 @@ CREATE TABLE "blog_posts" (
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "blog_posts_slug_unique" UNIQUE("slug")
+);
+--> statement-breakpoint
+CREATE TABLE "donations" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"receipt" varchar(40) NOT NULL,
+	"donor_name" varchar(255) NOT NULL,
+	"donor_email" varchar(255) NOT NULL,
+	"donor_phone" varchar(20),
+	"message" varchar(500),
+	"amount" integer NOT NULL,
+	"currency" varchar(3) DEFAULT 'INR' NOT NULL,
+	"status" "payment_status" DEFAULT 'created' NOT NULL,
+	"razorpay_order_id" varchar(255) NOT NULL,
+	"razorpay_payment_id" varchar(255),
+	"razorpay_signature" varchar(255),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "donations_receipt_unique" UNIQUE("receipt"),
+	CONSTRAINT "donations_razorpay_order_id_unique" UNIQUE("razorpay_order_id")
 );
 --> statement-breakpoint
 CREATE TABLE "events" (
@@ -53,6 +74,17 @@ CREATE TABLE "refresh_tokens" (
 	"ip" varchar(255),
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "users" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"password" varchar(255) NOT NULL,
+	"role" "user_role" DEFAULT 'ROLE_USER' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
 ALTER TABLE "blog_posts" ADD CONSTRAINT "blog_posts_created_by_users_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint

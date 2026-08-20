@@ -22,7 +22,7 @@ import {
   buildReceipt,
   verifyPaymentSignature,
   verifyWebhookSignature,
-  formatPaiseINR,
+  formatRupees,
 } from "../utils/payments.js";
 import {
   DONATION_PRESETS,
@@ -70,9 +70,11 @@ export const createOrder = async (req, res) => {
   try {
     // A unique, ≤40-char receipt: base36 timestamp + random bytes.
     const seed = `${Date.now().toString(36)}${crypto.randomBytes(4).toString("hex")}`;
+    const amountPaise = rupeesToPaise(amount);
     const donation = await createDonationOrder({
       receipt: buildReceipt(seed),
-      amountPaise: rupeesToPaise(amount),
+      amount,
+      amountPaise,
       donorName,
       donorEmail,
       donorPhone,
@@ -84,7 +86,9 @@ export const createOrder = async (req, res) => {
         {
           keyId: razorpayKeyId,
           orderId: donation.razorpayOrderId,
-          amount: donation.amount,
+          // Paise, not donation.amount (rupees) — the Razorpay Checkout widget
+          // must receive the same smallest-unit amount the order was created with.
+          amount: amountPaise,
           currency: donation.currency,
           receipt: donation.receipt,
           donor: { name: donorName, email: donorEmail, phone: donorPhone || "" },
@@ -152,7 +156,7 @@ export const getDonationReceipt = async (req, res) => {
   const donation = ref ? await getDonationByReceipt(ref) : null;
   if (!donation) return res.status(404).json(ApiResponse.error("Receipt not found."));
   return res.json(
-    ApiResponse.success({ donation, amountDisplay: formatPaiseINR(donation.amount, donation.currency) })
+    ApiResponse.success({ donation, amountDisplay: formatRupees(donation.amount, donation.currency) })
   );
 };
 
@@ -238,7 +242,7 @@ export const exportDonationsCsv = async (req, res) => {
           r.donorName,
           r.donorEmail,
           r.donorPhone || "",
-          (r.amount / 100).toFixed(2),
+          Number(r.amount).toFixed(2),
           r.currency,
           r.status,
           r.razorpayOrderId,

@@ -18,6 +18,7 @@ export default function Footer() {
             <li><a href="/contact">Donate</a></li>
             <li><a href="/contact">Volunteer</a></li>
             <li><a href="/services">Our programs</a></li>
+            <li><a href="/receipt">Find my receipt</a></li>
           </ul>
         </div>
         <div>

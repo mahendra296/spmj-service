@@ -7,6 +7,7 @@ const ADMIN_LINKS = [
   { to: "/admin/blog", label: "Blog" },
   { to: "/admin/gallery", label: "Gallery" },
   { to: "/admin/donations", label: "Donations" },
+  { to: "/admin/contact", label: "Contact" },
 ];
 
 export default function AdminLayout() {

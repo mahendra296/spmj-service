@@ -12,6 +12,7 @@ import { getUserByEmail } from "../service/user-service.js";
 import { countEvents } from "../service/event-service.js";
 import { countBlogPosts } from "../service/blog-service.js";
 import { countGalleryItems } from "../service/gallery-service.js";
+import { countContactSubmissions } from "../service/contact-service.js";
 import {
   setAuthCookies,
   clearAuthCookies,
@@ -104,13 +105,14 @@ export const refresh = async (req, res) => {
 };
 
 export const getDashboard = async (req, res) => {
-  const [events, posts, gallery] = await Promise.all([
+  const [events, posts, gallery, contact] = await Promise.all([
     countEvents(),
     countBlogPosts(),
     countGalleryItems(),
+    countContactSubmissions(),
   ]);
 
-  return res.json(ApiResponse.success({ counts: { events, posts, gallery } }));
+  return res.json(ApiResponse.success({ counts: { events, posts, gallery, contact } }));
 };
 
 export const logout = async (req, res) => {

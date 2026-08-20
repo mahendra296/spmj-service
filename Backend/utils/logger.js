@@ -190,11 +190,14 @@ logger.logResponse = (req, res, responseTime) => {
 };
 
 logger.logError = (error, req = null) => {
-  const errorInfo = {
-    message: error.message,
-    stack: error.stack,
-    name: error.name,
-  };
+  // Not every rejection is a real Error — e.g. the Razorpay SDK rejects with
+  // a plain { statusCode, error: { code, description } } response object,
+  // which has no .message/.stack and would otherwise log as "Error occurred"
+  // with no explanation at all. Fall back to the raw value in that case.
+  const errorInfo =
+    error instanceof Error
+      ? { message: error.message, stack: error.stack, name: error.name }
+      : { message: "Non-Error rejection", details: error };
 
   if (req) {
     errorInfo.method = req.method;

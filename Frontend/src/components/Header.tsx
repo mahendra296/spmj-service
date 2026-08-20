@@ -40,9 +40,8 @@ export default function Header() {
   return (
     <header className={`site-header${navOpen ? " nav-open" : ""}${scrolled ? " scrolled" : ""}`}>
       <div className="container nav-container">
-        <NavLink to="/" className="brand" aria-label="SPMJ Foundation home" onClick={() => setNavOpen(false)}>
-          <span className="brand-mark">SPMJ</span>
-          <span className="brand-dot"></span>
+        <NavLink to="/" className="brand" onClick={() => setNavOpen(false)}>
+          <img src="/logo.jpeg" alt="SPMJ Foundation" className="brand-logo" />
         </NavLink>
         <nav className="primary-nav" aria-label="Primary">
           {NAV_LINKS.map((link) => (

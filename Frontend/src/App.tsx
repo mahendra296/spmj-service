@@ -17,6 +17,7 @@ import Gallery from "./pages/public/Gallery";
 import Contact from "./pages/public/Contact";
 import Donate from "./pages/public/Donate";
 import DonateSuccess from "./pages/public/DonateSuccess";
+import ReceiptLookup from "./pages/public/ReceiptLookup";
 import NotFound from "./pages/public/NotFound";
 
 import Login from "./pages/admin/Login";
@@ -28,6 +29,7 @@ import BlogForm from "./pages/admin/BlogForm";
 import GalleryListAdmin from "./pages/admin/GalleryListAdmin";
 import GalleryForm from "./pages/admin/GalleryForm";
 import DonationsListAdmin from "./pages/admin/DonationsListAdmin";
+import ContactListAdmin from "./pages/admin/ContactListAdmin";
 
 export default function App() {
   return (
@@ -45,6 +47,7 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/donate/success" element={<DonateSuccess />} />
+          <Route path="/receipt" element={<ReceiptLookup />} />
           <Route path="*" element={<NotFound />} />
         </Route>
 
@@ -65,6 +68,7 @@ export default function App() {
             <Route path="/admin/gallery/new" element={<GalleryForm mode="create" />} />
             <Route path="/admin/gallery/:id/edit" element={<GalleryForm mode="edit" />} />
             <Route path="/admin/donations" element={<DonationsListAdmin />} />
+            <Route path="/admin/contact" element={<ContactListAdmin />} />
           </Route>
         </Route>
       </Routes>

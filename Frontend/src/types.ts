@@ -78,7 +78,7 @@ export interface Donation {
   donorEmail: string;
   donorPhone: string | null;
   message: string | null;
-  amount: number; // paise
+  amount: number; // rupees (decimal)
   currency: string;
   status: DonationStatus;
   razorpayOrderId: string;
@@ -91,9 +91,17 @@ export interface Donation {
 export interface DonationStats {
   totalCount: number;
   paidCount: number;
-  raisedPaise: number;
+  raisedAmount: number;
 }
 
 export interface FieldErrors {
   [field: string]: string;
+}
+
+export interface ContactSubmission {
+  id: number;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
 }

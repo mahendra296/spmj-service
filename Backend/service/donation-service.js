@@ -12,7 +12,8 @@ import logger from "../utils/logger.js";
  *
  * @param {object} input
  * @param {string} input.receipt      Our unique receipt id.
- * @param {number} input.amountPaise  Amount in paise (already validated).
+ * @param {number} input.amount       Amount in rupees (already validated) — stored as-is.
+ * @param {number} input.amountPaise  Same amount in paise — Razorpay's API always wants paise.
  * @param {string} input.donorName
  * @param {string} input.donorEmail
  * @param {string} [input.donorPhone]
@@ -41,7 +42,7 @@ export const createDonationOrder = async (input) => {
       donorEmail: input.donorEmail,
       donorPhone: input.donorPhone || null,
       message: input.message || null,
-      amount: input.amountPaise,
+      amount: input.amount,
       currency: DONATION_CURRENCY,
       status: "created",
       razorpayOrderId: order.id,
@@ -139,7 +140,7 @@ export const getDonationStats = async () => {
   return {
     totalCount: totals?.total ?? 0,
     paidCount: paid?.paidCount ?? 0,
-    raisedPaise: Number(paid?.raised ?? 0),
+    raisedAmount: Number(paid?.raised ?? 0),
   };
 };
 

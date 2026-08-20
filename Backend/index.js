@@ -17,9 +17,7 @@ import { eventPublicRouter, eventAdminRouter } from "./routes/event.routes.js";
 import { blogPublicRouter, blogAdminRouter } from "./routes/blog.routes.js";
 import { galleryPublicRouter, galleryAdminRouter } from "./routes/gallery.routes.js";
 import { donationPublicRouter, donationAdminRouter } from "./routes/donation.routes.js";
-import { contactRouter } from "./routes/contact.routes.js";
-
-import { requireAdmin } from "./middlewares/verify-auth-middleware.js";
+import { contactRouter, contactAdminRouter } from "./routes/contact.routes.js";
 
 const app = express();
 
@@ -64,22 +62,21 @@ app.use(express.urlencoded({ extended: true }));
 // guards (requireAdmin) enforce protected endpoints.
 app.use(verifyAuthToken);
 
-app.use("/api/auth", authRouter);
-app.use("/api/admin", adminDashboardRouter);
-
-app.use("/api/events", eventPublicRouter);
-app.use("/api/admin/events", requireAdmin, eventAdminRouter);
-
-app.use("/api/blog", blogPublicRouter);
-app.use("/api/admin/blog", requireAdmin, blogAdminRouter);
-
-app.use("/api/gallery", galleryPublicRouter);
-app.use("/api/admin/gallery", requireAdmin, galleryAdminRouter);
-
-app.use("/api/donations", donationPublicRouter);
-app.use("/api/admin/donations", requireAdmin, donationAdminRouter);
-
-app.use("/api/contact", contactRouter);
+// Every router below declares its own full path (e.g. "/api/events/:slug")
+// and its own auth guard (requireAdmin) where needed — index.js just mounts
+// them flat, with no path prefixes or middleware of its own.
+app.use(authRouter);
+app.use(adminDashboardRouter);
+app.use(eventPublicRouter);
+app.use(eventAdminRouter);
+app.use(blogPublicRouter);
+app.use(blogAdminRouter);
+app.use(galleryPublicRouter);
+app.use(galleryAdminRouter);
+app.use(donationPublicRouter);
+app.use(donationAdminRouter);
+app.use(contactRouter);
+app.use(contactAdminRouter);
 
 const PORT = env.PORT || 5000;
 

@@ -1,6 +1,6 @@
 {
-  "id": "f4cbc64f-fac7-40b7-b6ab-2927b88cfc9e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "3e7793af-a076-4edb-9344-eae8bf942f25",
+  "prevId": "f4cbc64f-fac7-40b7-b6ab-2927b88cfc9e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -165,7 +165,7 @@
         },
         "amount": {
           "name": "amount",
-          "type": "integer",
+          "type": "numeric(12, 2)",
           "primaryKey": false,
           "notNull": true
         },

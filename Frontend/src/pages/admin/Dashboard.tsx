@@ -5,7 +5,7 @@ import { getDashboard } from "../../api/auth";
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [counts, setCounts] = useState<{ events: number; posts: number; gallery: number } | null>(null);
+  const [counts, setCounts] = useState<{ events: number; posts: number; gallery: number; contact: number } | null>(null);
 
   useEffect(() => {
     getDashboard().then((data) => setCounts(data.counts));
@@ -19,7 +19,7 @@ export default function Dashboard() {
         <p className="muted">Manage events, blog posts, and the photo &amp; video gallery.</p>
       </div>
 
-      <div className="grid grid-3 stats-row">
+      <div className="grid grid-4 stats-row">
         <Link className="manage-card" to="/admin/events">
           <strong>{counts?.events ?? "—"}</strong>
           <span>Events</span>
@@ -34,6 +34,11 @@ export default function Dashboard() {
           <strong>{counts?.gallery ?? "—"}</strong>
           <span>Gallery items</span>
           <span className="link-arrow">Manage gallery →</span>
+        </Link>
+        <Link className="manage-card" to="/admin/contact">
+          <strong>{counts?.contact ?? "—"}</strong>
+          <span>Contact messages</span>
+          <span className="link-arrow">View messages →</span>
         </Link>
       </div>
 

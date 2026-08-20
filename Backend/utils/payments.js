@@ -5,22 +5,23 @@
 import crypto from "node:crypto";
 import { PAISE_PER_RUPEE } from "../config/constant.js";
 
-/** Rupees (major unit) → paise (integer, smallest unit Razorpay expects). */
+/**
+ * Rupees (major unit) → paise (integer, smallest unit). Razorpay's API always
+ * deals in paise regardless of how we store money — this conversion happens
+ * only at the point of calling Razorpay, never for our own DB/display.
+ */
 export const rupeesToPaise = (rupees) => Math.round(Number(rupees) * PAISE_PER_RUPEE);
 
-/** Paise → rupees (number). */
-export const paiseToRupees = (paise) => Number(paise) / PAISE_PER_RUPEE;
-
-/** Format paise as a localised INR string, e.g. 150000 → "₹1,500". */
-export const formatPaiseINR = (paise, currency = "INR") => {
+/** Format a rupee amount as a localised INR string, e.g. 1500 → "₹1,500.00". */
+export const formatRupees = (amount, currency = "INR") => {
   try {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency,
       maximumFractionDigits: 2,
-    }).format(paiseToRupees(paise));
+    }).format(Number(amount));
   } catch {
-    return `₹${paiseToRupees(paise)}`;
+    return `₹${amount}`;
   }
 };
 

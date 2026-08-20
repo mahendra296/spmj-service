@@ -3,7 +3,7 @@ import { listDonationsAdmin } from "../../api/donations";
 import { usePagedList } from "../../hooks/usePagedList";
 import PageSizeSelect from "../../components/PageSizeSelect";
 import Pagination from "../../components/Pagination";
-import { formatPaiseINR } from "../../utils/money";
+import { formatRupees } from "../../utils/money";
 import type { DonationStats } from "../../types";
 
 export default function DonationsListAdmin() {
@@ -38,7 +38,7 @@ export default function DonationsListAdmin() {
       {stats && (
         <div className="stat-row">
           <div className="manage-card">
-            <strong>{formatPaiseINR(stats.raisedPaise)}</strong>
+            <strong>{formatRupees(stats.raisedAmount)}</strong>
             <span>Total raised</span>
           </div>
           <div className="manage-card">
@@ -77,7 +77,7 @@ export default function DonationsListAdmin() {
                           <span className="table-title">{d.donorName}</span>{" "}
                           <span className="muted nowrap">{d.donorEmail}</span>
                         </td>
-                        <td className="nowrap"><strong>{formatPaiseINR(d.amount, d.currency)}</strong></td>
+                        <td className="nowrap"><strong>{formatRupees(d.amount, d.currency)}</strong></td>
                         <td><span className={`badge badge-${badgeClass(d.status)}`}>{d.status}</span></td>
                         <td className="nowrap">{d.receipt}</td>
                         <td className="nowrap">{d.razorpayPaymentId || "—"}</td>

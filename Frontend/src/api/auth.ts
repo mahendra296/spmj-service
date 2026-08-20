@@ -9,4 +9,6 @@ export const logout = () => apiPost<undefined>("/auth/logout");
 export const me = () => apiGet<{ user: User | null }>("/auth/me");
 
 export const getDashboard = () =>
-  apiGet<{ counts: { events: number; posts: number; gallery: number } }>("/admin/dashboard");
+  apiGet<{ counts: { events: number; posts: number; gallery: number; contact: number } }>(
+    "/admin/dashboard"
+  );
