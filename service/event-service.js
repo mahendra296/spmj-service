@@ -8,10 +8,10 @@ export const createEvent = async (data) => {
   logger.info("Invoke createEvent method");
   logger.info("Creating event with title: {}", data.title);
   try {
-    const [event] = await db
+    const [result] = await db
       .insert(eventsTable)
-      .values({ ...data, slug: uniqueSlug(data.title) })
-      .returning();
+      .values({ ...data, slug: uniqueSlug(data.title) });
+    const event = await getEventById(result.insertId);
     logger.info("Event created with id: {}", event.id);
     return event;
   } catch (error) {
@@ -24,12 +24,8 @@ export const updateEvent = async (id, data) => {
   logger.info("Invoke updateEvent method");
   logger.info("Updating event id: {}", id);
   try {
-    const [event] = await db
-      .update(eventsTable)
-      .set(data)
-      .where(eq(eventsTable.id, id))
-      .returning();
-    return event;
+    await db.update(eventsTable).set(data).where(eq(eventsTable.id, id));
+    return await getEventById(id);
   } catch (error) {
     logger.error("Error while executing updateEvent", error);
     throw error;

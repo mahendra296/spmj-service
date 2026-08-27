@@ -2,6 +2,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { MAX_IMAGE_SIZE, MAX_VIDEO_SIZE } from "../config/constant.js";
+import { env } from "../validators/env.js";
 
 const IMAGE_TYPES = [
   "image/jpeg",
@@ -20,7 +21,7 @@ const ensureDir = (dir) => {
 const makeStorage = (subdir) =>
   multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, ensureDir(path.join("public", "uploads", subdir)));
+      cb(null, ensureDir(path.join(env.UPLOAD_DIR, subdir)));
     },
     filename: (req, file, cb) => {
       const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);

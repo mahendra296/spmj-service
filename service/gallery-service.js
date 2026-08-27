@@ -7,7 +7,8 @@ export const createGalleryItem = async (data) => {
   logger.info("Invoke createGalleryItem method");
   logger.info("Creating gallery item of type: {}", data.mediaType);
   try {
-    const [item] = await db.insert(galleryItemsTable).values(data).returning();
+    const [result] = await db.insert(galleryItemsTable).values(data);
+    const item = await getGalleryItemById(result.insertId);
     logger.info("Gallery item created with id: {}", item.id);
     return item;
   } catch (error) {
@@ -20,12 +21,8 @@ export const updateGalleryItem = async (id, data) => {
   logger.info("Invoke updateGalleryItem method");
   logger.info("Updating gallery item id: {}", id);
   try {
-    const [item] = await db
-      .update(galleryItemsTable)
-      .set(data)
-      .where(eq(galleryItemsTable.id, id))
-      .returning();
-    return item;
+    await db.update(galleryItemsTable).set(data).where(eq(galleryItemsTable.id, id));
+    return await getGalleryItemById(id);
   } catch (error) {
     logger.error("Error while executing updateGalleryItem", error);
     throw error;

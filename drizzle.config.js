@@ -3,8 +3,8 @@ import { defineConfig } from "drizzle-kit";
 export default defineConfig({
   out: "./drizzle/migrations",
   schema: "./drizzle/schema.js",
-  dialect: "postgresql",
+  dialect: "mysql",
   dbCredentials: {
-    url: process.env.POSTGRES_DATABASE_URL,
+    url: process.env.MYSQL_DATABASE_URL,
   },
 });

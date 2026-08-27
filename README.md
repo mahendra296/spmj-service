@@ -11,7 +11,7 @@ Built with Node.js, Express, and EJS templates.
 ```bash
 npm install
 npm run db:generate   # generate SQL migration from drizzle/schema.js
-npm run db:migrate    # apply migrations to PostgreSQL
+npm run db:migrate    # apply migrations to MySQL
 npm run db:seed       # create the admin + user accounts
 npm run dev
 ```
@@ -20,10 +20,10 @@ The site runs at `http://localhost:3000` (configurable via `PORT` in `.env`).
 
 ## Authentication & database
 
-Login is backed by **PostgreSQL** (via Drizzle ORM) with **JWT access + refresh
+Login is backed by **MySQL** (via Drizzle ORM) with **JWT access + refresh
 tokens**, **role-based access control**, and **argon2**-hashed passwords.
 
-- Connection: set `POSTGRES_DATABASE_URL` in `.env`.
+- Connection: set `MYSQL_DATABASE_URL` in `.env`.
 - Schema: `drizzle/schema.js` — `users` (role `ROLE_ADMIN` / `ROLE_USER`),
   `refresh_tokens` (one row per signed-in session), the content tables
   `events`, `blog_posts`, and `gallery_items`, plus `donations` (Razorpay).

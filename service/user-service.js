@@ -42,10 +42,10 @@ export const createUser = async ({ name, email, password, role = ROLES.USER }) =
   logger.info("Invoke createUser method");
   logger.info("Creating user with email: {} role: {}", email, role);
   try {
-    const [user] = await db
+    const [result] = await db
       .insert(usersTable)
-      .values({ name, email, password, role })
-      .returning();
+      .values({ name, email, password, role });
+    const user = await getUserById(result.insertId);
     logger.info("User created with id: {}", user.id);
     return user;
   } catch (error) {
@@ -62,15 +62,13 @@ export const upsertUserByEmail = async ({ name, email, password, role }) => {
   logger.info("Invoke upsertUserByEmail method");
   logger.info("Upserting user with email: {} role: {}", email, role);
   try {
-    const [user] = await db
+    await db
       .insert(usersTable)
       .values({ name, email, password, role })
-      .onConflictDoUpdate({
-        target: usersTable.email,
+      .onDuplicateKeyUpdate({
         set: { name, password, role },
-      })
-      .returning();
-    return user;
+      });
+    return await getUserByEmail(email);
   } catch (error) {
     logger.error("Error while executing upsertUserByEmail", error);
     throw error;

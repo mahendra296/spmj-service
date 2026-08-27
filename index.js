@@ -56,6 +56,9 @@ app.use((req, res, next) => {
 app.use(requestIp.mw());
 
 // Serve static files before auth check (CSS, JS, images don't need authentication)
+// Uploaded files are served from UPLOAD_DIR regardless of where it points on
+// disk (e.g. a mounted volume outside `public/` in production).
+app.use("/uploads", express.static(env.UPLOAD_DIR));
 app.use(express.static("public"));
 // Capture the raw JSON body so the Razorpay webhook can verify its HMAC
 // signature against the exact bytes received (parsing would otherwise lose them).

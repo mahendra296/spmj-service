@@ -8,10 +8,10 @@ export const createBlogPost = async (data) => {
   logger.info("Invoke createBlogPost method");
   logger.info("Creating blog post with title: {}", data.title);
   try {
-    const [post] = await db
+    const [result] = await db
       .insert(blogPostsTable)
-      .values({ ...data, slug: uniqueSlug(data.title) })
-      .returning();
+      .values({ ...data, slug: uniqueSlug(data.title) });
+    const post = await getBlogPostById(result.insertId);
     logger.info("Blog post created with id: {}", post.id);
     return post;
   } catch (error) {
@@ -24,12 +24,8 @@ export const updateBlogPost = async (id, data) => {
   logger.info("Invoke updateBlogPost method");
   logger.info("Updating blog post id: {}", id);
   try {
-    const [post] = await db
-      .update(blogPostsTable)
-      .set(data)
-      .where(eq(blogPostsTable.id, id))
-      .returning();
-    return post;
+    await db.update(blogPostsTable).set(data).where(eq(blogPostsTable.id, id));
+    return await getBlogPostById(id);
   } catch (error) {
     logger.error("Error while executing updateBlogPost", error);
     throw error;

@@ -34,22 +34,19 @@ export const createDonationOrder = async (input) => {
   });
   logger.info("Found the order form give doner eamil : {}", input.donorEmail )
 
-  const [donation] = await db
-    .insert(donationsTable)
-    .values({
-      receipt: input.receipt,
-      donorName: input.donorName,
-      donorEmail: input.donorEmail,
-      donorPhone: input.donorPhone || null,
-      message: input.message || null,
-      amount: input.amount,
-      currency: DONATION_CURRENCY,
-      status: "created",
-      razorpayOrderId: order.id,
-    })
-    .returning();
+  await db.insert(donationsTable).values({
+    receipt: input.receipt,
+    donorName: input.donorName,
+    donorEmail: input.donorEmail,
+    donorPhone: input.donorPhone || null,
+    message: input.message || null,
+    amount: input.amount,
+    currency: DONATION_CURRENCY,
+    status: "created",
+    razorpayOrderId: order.id,
+  });
 
-  return donation;
+  return await getDonationByOrderId(order.id);
 };
 
 export const getDonationByOrderId = async (orderId) => {
@@ -75,7 +72,7 @@ export const getDonationByReceipt = async (receipt) => {
  * already paid / not found.
  */
 export const markDonationPaid = async (orderId, { paymentId, signature } = {}) => {
-  const [donation] = await db
+  const [result] = await db
     .update(donationsTable)
     .set({
       status: "paid",
@@ -87,9 +84,9 @@ export const markDonationPaid = async (orderId, { paymentId, signature } = {}) =
         eq(donationsTable.razorpayOrderId, orderId),
         ne(donationsTable.status, "paid")
       )
-    )
-    .returning();
-  return donation;
+    );
+  if (result.affectedRows === 0) return undefined;
+  return await getDonationByOrderId(orderId);
 };
 
 /**
@@ -97,7 +94,7 @@ export const markDonationPaid = async (orderId, { paymentId, signature } = {}) =
  * webhook after a successful capture must not undo success).
  */
 export const markDonationFailed = async (orderId, { paymentId } = {}) => {
-  const [donation] = await db
+  const [result] = await db
     .update(donationsTable)
     .set({
       status: "failed",
@@ -108,9 +105,9 @@ export const markDonationFailed = async (orderId, { paymentId } = {}) => {
         eq(donationsTable.razorpayOrderId, orderId),
         ne(donationsTable.status, "paid")
       )
-    )
-    .returning();
-  return donation;
+    );
+  if (result.affectedRows === 0) return undefined;
+  return await getDonationByOrderId(orderId);
 };
 
 /** Newest-first page of donations for the admin list. */

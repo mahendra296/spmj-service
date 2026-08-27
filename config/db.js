@@ -1,20 +1,20 @@
-// PostgreSQL database connection (Drizzle ORM + postgres-js)
+// MySQL database connection (Drizzle ORM + mysql2)
 
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import * as schema from "../drizzle/schema.js";
 
-const connectionString = process.env.POSTGRES_DATABASE_URL;
+const connectionString = process.env.MYSQL_DATABASE_URL;
 
-const client = postgres(connectionString, {
-  max: 10, // Maximum number of connections in the pool
-  idle_timeout: 20, // Close idle connections after 20 seconds
-  connect_timeout: 10, // Timeout for connection attempts
+const pool = mysql.createPool({
+  uri: connectionString,
+  connectionLimit: 10, // Maximum number of connections in the pool
+  connectTimeout: 10000, // Timeout for connection attempts (ms)
 });
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(pool, { schema, mode: "default" });
 
 // Close the connection pool (used by one-off scripts like the seeder)
 export const closeDb = async () => {
-  await client.end({ timeout: 5 });
+  await pool.end();
 };

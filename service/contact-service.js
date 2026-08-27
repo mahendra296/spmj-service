@@ -6,10 +6,11 @@ import logger from "../utils/logger.js";
 export const createContactSubmission = async (data) => {
   logger.info("Invoke createContactSubmission method");
   try {
+    const [result] = await db.insert(contactSubmissionsTable).values(data);
     const [submission] = await db
-      .insert(contactSubmissionsTable)
-      .values(data)
-      .returning();
+      .select()
+      .from(contactSubmissionsTable)
+      .where(eq(contactSubmissionsTable.id, result.insertId));
     return submission;
   } catch (error) {
     logger.error("Error while executing createContactSubmission", error);

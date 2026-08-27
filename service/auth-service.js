@@ -93,11 +93,11 @@ export const createSession = async (userId, { ip, userAgent }) => {
   logger.info("Invoke createSession method");
   logger.info("Creating session for user id: {}", userId);
   try {
-    const [session] = await db
+    const [result] = await db
       .insert(refreshTokensTable)
-      .values({ userId, userAgent, ip, valid: true })
-      .returning({ id: refreshTokensTable.id });
+      .values({ userId, userAgent, ip, valid: true });
 
+    const session = { id: result.insertId };
     addSession(session.id);
     logger.info("Session created with id: {}", session.id);
     return session;

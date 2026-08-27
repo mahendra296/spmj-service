@@ -18,17 +18,22 @@ const envSchema = z.object({
     .min(1, "REFRESH_TOKEN_SECRET is required")
     .default("spmj-jwt-refresh-secret-change-me"),
 
-  // PostgreSQL database
-  POSTGRES_DATABASE_URL: z
+  // MySQL database
+  MYSQL_DATABASE_URL: z
     .string()
-    .min(1, "POSTGRES_DATABASE_URL is required")
-    .default("postgresql://postgres:root@localhost:5432/spmjdb"),
+    .min(1, "MYSQL_DATABASE_URL is required")
+    .default("mysql://root:root@localhost:3306/spmjdb"),
 
   // Razorpay — optional so the app still boots without them; the donation
   // flow detects whether they're set and degrades gracefully when they aren't.
   RAZORPAY_KEY_ID: z.string().default(""),
   RAZORPAY_KEY_SECRET: z.string().default(""),
   RAZORPAY_WEBHOOK_SECRET: z.string().default(""),
+
+  // Base directory for uploaded files. The events/blog/gallery subfolders
+  // are always appended to this (see middlewares/upload-middleware.js) —
+  // only the base changes, e.g. to point at a mounted volume in production.
+  UPLOAD_DIR: z.string().min(1, "UPLOAD_DIR is required").default("public/uploads"),
 });
 
 const parseEnv = () => {

@@ -1,43 +1,23 @@
 import {
-  pgTable,
-  pgEnum,
-  serial,
-  integer,
-  numeric,
+  mysqlTable,
+  mysqlEnum,
+  int,
+  decimal,
   varchar,
   text,
   boolean,
   timestamp,
-} from "drizzle-orm/pg-core";
+} from "drizzle-orm/mysql-core";
 
-// Role-based access control values: ROLE_ADMIN and ROLE_USER
-export const userRoleEnum = pgEnum("user_role", ["ROLE_ADMIN", "ROLE_USER"]);
-
-// Blog / News categories
-export const blogCategoryEnum = pgEnum("blog_category", [
-  "article",
-  "press",
-  "announcement",
-]);
-
-// Gallery media types
-export const mediaTypeEnum = pgEnum("media_type", ["image", "video"]);
-
-// Donation / payment lifecycle states
-export const paymentStatusEnum = pgEnum("payment_status", [
-  "created",
-  "paid",
-  "failed",
-  "refunded",
-]);
-
-export const usersTable = pgTable("users", {
-  id: serial("id").primaryKey(),
+export const usersTable = mysqlTable("users", {
+  id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   // argon2 password hash
   password: varchar("password", { length: 255 }).notNull(),
-  role: userRoleEnum("role").default("ROLE_USER").notNull(),
+  role: mysqlEnum("role", ["ROLE_ADMIN", "ROLE_USER"])
+    .default("ROLE_USER")
+    .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -50,9 +30,9 @@ export const usersTable = pgTable("users", {
  * The JWT refresh token only carries this row's id; validity is checked
  * here (and mirrored in an in-memory cache for O(1) lookups).
  */
-export const refreshTokensTable = pgTable("refresh_tokens", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id")
+export const refreshTokensTable = mysqlTable("refresh_tokens", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id")
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" }),
   valid: boolean("valid").default(true).notNull(),
@@ -69,8 +49,8 @@ export const refreshTokensTable = pgTable("refresh_tokens", {
  * Events — upcoming & past events/camps with details.
  * `eventDate` drives the upcoming/past split shown to visitors.
  */
-export const eventsTable = pgTable("events", {
-  id: serial("id").primaryKey(),
+export const eventsTable = mysqlTable("events", {
+  id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 280 }).notNull().unique(),
   summary: varchar("summary", { length: 500 }),
@@ -79,7 +59,7 @@ export const eventsTable = pgTable("events", {
   eventDate: timestamp("event_date").notNull(),
   coverImage: varchar("cover_image", { length: 500 }),
   published: boolean("published").default(true).notNull(),
-  createdBy: integer("created_by").references(() => usersTable.id, {
+  createdBy: int("created_by").references(() => usersTable.id, {
     onDelete: "set null",
   }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -92,18 +72,20 @@ export const eventsTable = pgTable("events", {
 /**
  * Blog / News — articles, press coverage, announcements.
  */
-export const blogPostsTable = pgTable("blog_posts", {
-  id: serial("id").primaryKey(),
+export const blogPostsTable = mysqlTable("blog_posts", {
+  id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 280 }).notNull().unique(),
-  category: blogCategoryEnum("category").default("article").notNull(),
+  category: mysqlEnum("category", ["article", "press", "announcement"])
+    .default("article")
+    .notNull(),
   excerpt: varchar("excerpt", { length: 500 }),
   content: text("content").notNull(),
   coverImage: varchar("cover_image", { length: 500 }),
   author: varchar("author", { length: 255 }),
   published: boolean("published").default(true).notNull(),
   publishedAt: timestamp("published_at").defaultNow().notNull(),
-  createdBy: integer("created_by").references(() => usersTable.id, {
+  createdBy: int("created_by").references(() => usersTable.id, {
     onDelete: "set null",
   }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -118,16 +100,18 @@ export const blogPostsTable = pgTable("blog_posts", {
  * `mediaUrl` is either an uploaded file path (/uploads/gallery/...) or an
  * external URL (e.g. a YouTube link) for videos.
  */
-export const galleryItemsTable = pgTable("gallery_items", {
-  id: serial("id").primaryKey(),
+export const galleryItemsTable = mysqlTable("gallery_items", {
+  id: int("id").autoincrement().primaryKey(),
   title: varchar("title", { length: 255 }),
   caption: varchar("caption", { length: 500 }),
-  mediaType: mediaTypeEnum("media_type").default("image").notNull(),
+  mediaType: mysqlEnum("media_type", ["image", "video"])
+    .default("image")
+    .notNull(),
   mediaUrl: varchar("media_url", { length: 500 }).notNull(),
-  eventId: integer("event_id").references(() => eventsTable.id, {
+  eventId: int("event_id").references(() => eventsTable.id, {
     onDelete: "set null",
   }),
-  createdBy: integer("created_by").references(() => usersTable.id, {
+  createdBy: int("created_by").references(() => usersTable.id, {
     onDelete: "set null",
   }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -147,17 +131,19 @@ export const galleryItemsTable = pgTable("gallery_items", {
  * currency unit), so the conversion happens only at the point of calling
  * Razorpay (see utils/payments.js `rupeesToPaise`) — never in this table.
  */
-export const donationsTable = pgTable("donations", {
-  id: serial("id").primaryKey(),
+export const donationsTable = mysqlTable("donations", {
+  id: int("id").autoincrement().primaryKey(),
   // Our internal reference, also sent to Razorpay as the order receipt.
   receipt: varchar("receipt", { length: 40 }).notNull().unique(),
   donorName: varchar("donor_name", { length: 255 }).notNull(),
   donorEmail: varchar("donor_email", { length: 255 }).notNull(),
   donorPhone: varchar("donor_phone", { length: 20 }),
   message: varchar("message", { length: 500 }),
-  amount: numeric("amount", { precision: 12, scale: 2, mode: "number" }).notNull(), // rupees
+  amount: decimal("amount", { precision: 12, scale: 2, mode: "number" }).notNull(), // rupees
   currency: varchar("currency", { length: 3 }).default("INR").notNull(),
-  status: paymentStatusEnum("status").default("created").notNull(),
+  status: mysqlEnum("status", ["created", "paid", "failed", "refunded"])
+    .default("created")
+    .notNull(),
   razorpayOrderId: varchar("razorpay_order_id", { length: 255 })
     .notNull()
     .unique(),
@@ -173,8 +159,8 @@ export const donationsTable = pgTable("donations", {
 /**
  * Contact form submissions — one row per message sent via /contact.
  */
-export const contactSubmissionsTable = pgTable("contact_submissions", {
-  id: serial("id").primaryKey(),
+export const contactSubmissionsTable = mysqlTable("contact_submissions", {
+  id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   message: text("message").notNull(),
