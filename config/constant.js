@@ -62,3 +62,27 @@ export const PAYMENT_STATUSES = ["created", "paid", "failed", "refunded"];
 
 // One rupee = 100 paise.
 export const PAISE_PER_RUPEE = 100;
+
+/* ---------- Organisation details (letterhead for receipts / emails) ---------- */
+
+export const ORG_NAME = "SPMJ Foundation";
+export const ORG_REG_NO = "Reg. No. F-723/B.K, Guj-737/B.K";
+export const ORG_ADDRESS_LINES = [
+  "103/104 Shop No, Virat Complex, Prabhat Typing Gali, Near Jilla Panchayat,",
+  "Palanpur, Banaskantha, Gujarat - 385001",
+];
+export const ORG_EMAIL = "sahyogjasali@gmail.com";
+export const ORG_PHONE = "+91 99986 70081";
+
+/* ---------- Transactional email ---------- */
+
+// Gmail SMTP timeouts — kept short so a slow or unreachable mail server
+// can't hold a pooled connection (or a background send) open for long.
+export const MAIL_CONNECTION_TIMEOUT_MS = 10 * MILLISECONDS_PER_SECOND;
+export const MAIL_SOCKET_TIMEOUT_MS = 20 * MILLISECONDS_PER_SECOND;
+
+// Retries for a failed send. Receipts are worth one retry (transient SMTP
+// blips and Gmail throttling are common); after that we give up and log —
+// the donor can always look the receipt up at /receipt.
+export const MAIL_MAX_ATTEMPTS = 2;
+export const MAIL_RETRY_DELAY_MS = 3 * MILLISECONDS_PER_SECOND;

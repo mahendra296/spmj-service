@@ -1,6 +1,36 @@
 (function () {
   'use strict';
 
+  /* ---------- Colour mode (light / dark) ----------
+     partials/theme-init.ejs has already applied the stored theme to <html>;
+     this only handles switching it afterwards. */
+  (function themeSwitcher() {
+    const STORAGE_KEY = 'spmj-theme';
+    const buttons = document.querySelectorAll('[data-theme-toggle]');
+    if (!buttons.length) return;
+
+    const root = document.documentElement;
+
+    const apply = (theme) => {
+      root.setAttribute('data-theme', theme);
+      const next = theme === 'dark' ? 'light' : 'dark';
+      // The hover tooltip is drawn from aria-label, so this is the only label.
+      buttons.forEach((btn) => {
+        btn.setAttribute('aria-label', 'Switch to ' + next + ' mode');
+      });
+    };
+
+    apply(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* storage blocked */ }
+        apply(next);
+      });
+    });
+  })();
+
   const toggle = document.querySelector('.nav-toggle');
   const header = document.querySelector('.site-header');
 

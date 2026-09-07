@@ -1,0 +1,150 @@
+<%
+  /* Transactional donation-receipt email. Rendered by
+     service/mail-service.js (ejs.renderFile), never by a route.
+     Expects: donation, amountDisplay, dateDisplay, receiptUrl, org.
+
+     Email clients strip <style> blocks and ignore flexbox/grid, so this is
+     deliberately table-based with inline styles only. */
+  const isPaid = donation.status === 'paid';
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation receipt <%= donation.receipt %></title>
+</head>
+<body style="margin:0; padding:0; background:#f4f5f7; font-family:Helvetica,Arial,sans-serif; color:#1f2430;">
+  <!-- Preheader: shown in the inbox preview, hidden in the body. -->
+  <div style="display:none; font-size:1px; color:#f4f5f7; max-height:0; overflow:hidden;">
+    Receipt <%= donation.receipt %> for your donation of <%= amountDisplay %> to <%= org.name %>.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%; max-width:600px; background:#ffffff; border-radius:10px; overflow:hidden; border:1px solid #e4e6eb;">
+
+          <!-- Letterhead -->
+          <tr>
+            <td style="padding:28px 32px 20px; border-bottom:1px solid #e4e6eb;">
+              <div style="font-size:20px; font-weight:bold; color:#1f2430;"><%= org.name %></div>
+              <div style="font-size:12px; color:#6b7280; padding-top:6px;"><%= org.regNo %></div>
+              <% org.addressLines.forEach(function (line) { %>
+                <div style="font-size:12px; color:#6b7280;"><%= line %></div>
+              <% }); %>
+              <div style="font-size:12px; color:#6b7280; padding-top:4px;">
+                <%= org.email %> &nbsp;&middot;&nbsp; <%= org.phone %>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Headline -->
+          <tr>
+            <td style="padding:28px 32px 8px;">
+              <% if (isPaid) { %>
+                <h1 style="margin:0; font-size:22px; color:#1f2430;">Thank you, <%= donation.donorName %>!</h1>
+                <p style="margin:12px 0 0; font-size:15px; line-height:1.6; color:#404757;">
+                  We&rsquo;ve received your donation of <strong><%= amountDisplay %></strong>.
+                  You&rsquo;re helping a child stay in school. This email is your receipt &mdash;
+                  please keep it for your records.
+                </p>
+              <% } else { %>
+                <h1 style="margin:0; font-size:22px; color:#1f2430;">Your payment is being confirmed</h1>
+                <p style="margin:12px 0 0; font-size:15px; line-height:1.6; color:#404757;">
+                  Thanks, <%= donation.donorName %>. Your donation of <strong><%= amountDisplay %></strong>
+                  is still processing &mdash; we&rsquo;ll email you again once it&rsquo;s confirmed.
+                </p>
+              <% } %>
+            </td>
+          </tr>
+
+          <!-- Status -->
+          <tr>
+            <td style="padding:16px 32px 0;">
+              <span style="display:inline-block; padding:5px 12px; border-radius:999px; font-size:12px; font-weight:bold; text-transform:uppercase; letter-spacing:0.4px; <%= isPaid ? 'background:#e6f6ec; color:#1e7a3c;' : 'background:#fdf3e3; color:#96591a;' %>">
+                <%= isPaid ? 'Paid' : donation.status %>
+              </span>
+            </td>
+          </tr>
+
+          <!-- Receipt detail -->
+          <tr>
+            <td style="padding:20px 32px 4px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px; border-collapse:collapse;">
+                <tr>
+                  <td colspan="2" style="padding:0 0 10px; font-size:15px; font-weight:bold; color:#1f2430;">Donation receipt</td>
+                </tr>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2; width:42%;">Reference</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2; font-weight:bold;"><%= donation.receipt %></td>
+                </tr>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2;">Donor name</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2;"><%= donation.donorName %></td>
+                </tr>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2;">Donor email</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2;"><%= donation.donorEmail %></td>
+                </tr>
+                <% if (donation.donorPhone) { %>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2;">Donor phone</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2;"><%= donation.donorPhone %></td>
+                </tr>
+                <% } %>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2;">Amount</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2; font-weight:bold;"><%= amountDisplay %></td>
+                </tr>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2;">Date</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2;"><%= dateDisplay %></td>
+                </tr>
+                <% if (donation.razorpayPaymentId) { %>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2;">Payment ID</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2;"><%= donation.razorpayPaymentId %></td>
+                </tr>
+                <% } %>
+                <% if (donation.message) { %>
+                <tr>
+                  <td style="padding:9px 0; color:#6b7280; border-top:1px solid #eceef2;">Your message</td>
+                  <td style="padding:9px 0; color:#1f2430; border-top:1px solid #eceef2;"><%= donation.message %></td>
+                </tr>
+                <% } %>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Receipt link -->
+          <% if (receiptUrl) { %>
+          <tr>
+            <td style="padding:24px 32px 4px;">
+              <a href="<%= receiptUrl %>" style="display:inline-block; padding:11px 20px; background:#1f6feb; color:#ffffff; font-size:14px; font-weight:bold; text-decoration:none; border-radius:6px;">
+                View or download receipt
+              </a>
+            </td>
+          </tr>
+          <% } %>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 32px 28px;">
+              <p style="margin:0; font-size:12px; line-height:1.6; color:#6b7280;">
+                This is an automated receipt for a donation made at <%= org.name %>.
+                <% if (receiptUrl) { %>
+                  You can retrieve it any time with reference <strong><%= donation.receipt %></strong>.
+                <% } %>
+                If you didn&rsquo;t make this donation, please reply to this email
+                or write to <%= org.email %>.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

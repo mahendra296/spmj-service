@@ -91,6 +91,47 @@ Public, secure one-time donations are processed by **Razorpay**.
   `payment.failed`, and `order.paid` events, using the same secret as
   `RAZORPAY_WEBHOOK_SECRET`.
 
+## Transactional email (donation receipts)
+
+When a donation transitions to `paid`, the donor is emailed a receipt.
+
+- **Setup** (Gmail): in the Google account, turn on **2-Step Verification**,
+  generate an **App Password** at <https://myaccount.google.com/apppasswords>,
+  then add to `.env`:
+  ```
+  GMAIL_USER=you@gmail.com
+  GMAIL_APP_PASSWORD=abcd efgh ijkl mnop   # App Password, NOT the account password
+  MAIL_FROM_NAME=SPMJ Foundation
+  APP_BASE_URL=https://<your-host>
+  ```
+  Mail goes out through nodemailer's built-in `service: "gmail"` (smtp.gmail.com
+  over TLS) — there is no host or port to configure. `MAIL_FROM` and
+  `MAIL_REPLY_TO` are optional; `MAIL_FROM` must be a verified "Send mail as"
+  alias of `GMAIL_USER` or Gmail will rewrite it.
+- **Optional by design**: if `GMAIL_USER` / `GMAIL_APP_PASSWORD` are unset the
+  app still boots and payments work exactly as before — each skipped send just
+  logs a warning.
+- **Gmail limits**: a free Gmail account allows roughly 500 recipients/day
+  (Workspace ~2,000). Fine for donation receipts; move to a dedicated sending
+  provider before doing bulk mail.
+- **Never blocks a payment**: `queueDonationReceipt()`
+  (`service/mail-service.js`) is **fire-and-forget** — it defers the send with
+  `setImmediate` so the HTTP response goes out first, and swallows every error
+  into a log line. A mail outage cannot fail `/donate/verify` or the webhook.
+  Failed sends are retried once (`MAIL_MAX_ATTEMPTS`); after that the donor can
+  still retrieve the receipt at `/receipt?ref=<reference>`.
+- **Sent exactly once**: only the code path that actually flipped the row to
+  `paid` sends the mail, so the checkout callback and the webhook never both
+  email the same donor.
+- **Template**: `views/emails/donation-receipt.ejs` (table-based HTML with
+  inline styles, plus a plain-text alternative for deliverability). It mirrors
+  the on-site receipt card and the downloadable PDF.
+- **Awaitable variants**: `sendDonationReceipt(donation)` and
+  `sendMail({ to, subject, html, text })` throw on failure — use those for
+  scripts or an admin "resend" action. `verifyMailConnection()` in
+  `config/mailer.js` checks the Gmail credentials (catching a wrong App
+  Password) without throwing.
+
 ## Pages
 
 - `/` — Home (mission, programs, impact, stories)

@@ -30,6 +30,21 @@ const envSchema = z.object({
   RAZORPAY_KEY_SECRET: z.string().default(""),
   RAZORPAY_WEBHOOK_SECRET: z.string().default(""),
 
+  // Gmail / transactional email — optional so the app still boots without
+  // credentials; sends are skipped with a warning when either is empty
+  // (see config/mailer.js). GMAIL_APP_PASSWORD must be a Google **App
+  // Password**, not the account password.
+  GMAIL_USER: z.string().default(""),
+  GMAIL_APP_PASSWORD: z.string().default(""),
+  // Optional From override — must be a verified "Send mail as" alias of
+  // GMAIL_USER, otherwise Gmail rewrites or rejects it. Defaults to GMAIL_USER.
+  MAIL_FROM: z.string().default(""),
+  MAIL_FROM_NAME: z.string().default(""),
+  MAIL_REPLY_TO: z.string().default(""),
+
+  // Public base URL used to build absolute links in emails (receipt lookup).
+  APP_BASE_URL: z.string().default("http://localhost:3000"),
+
   // Base directory for uploaded files. The events/blog/gallery subfolders
   // are always appended to this (see middlewares/upload-middleware.js) —
   // only the base changes, e.g. to point at a mounted volume in production.

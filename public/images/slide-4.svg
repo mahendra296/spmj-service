@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A student climbing rising steps towards a graduation cap and a bright horizon">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#0a0f22"/>
+      <stop offset="0.5" stop-color="#241a46"/>
+      <stop offset="1" stop-color="#6d2f1e"/>
+    </linearGradient>
+    <radialGradient id="glow4" cx="0.78" cy="0.3" r="0.55">
+      <stop offset="0" stop-color="#ffd166" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ffd166" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="stepG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff9a3c"/>
+      <stop offset="1" stop-color="#ff5a1f"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg4)"/>
+  <rect width="1920" height="1080" fill="url(#glow4)"/>
+
+  <!-- starfield -->
+  <g fill="#ffffff" opacity="0.4">
+    <circle cx="240" cy="140" r="3"/><circle cx="470" cy="240" r="2.5"/>
+    <circle cx="720" cy="120" r="3"/><circle cx="980" cy="220" r="2"/>
+    <circle cx="1240" cy="96" r="3"/><circle cx="1580" cy="180" r="2.5"/>
+    <circle cx="1780" cy="90" r="3"/><circle cx="360" cy="360" r="2"/>
+    <circle cx="1460" cy="330" r="2"/>
+  </g>
+  <g fill="#ffd166" opacity="0.75">
+    <path d="M1690 300l12 30 30 12-30 12-12 30-12-30-30-12 30-12Z"/>
+    <path d="M1862 690l9 22 22 9-22 9-9 22-9-22-22-9 22-9Z"/>
+  </g>
+
+  <g transform="translate(120 0)">
+  <!-- rising steps -->
+  <g>
+    <rect x="1010" y="820" width="150" height="200" rx="12" fill="url(#stepG)" opacity="0.55"/>
+    <rect x="1180" y="720" width="150" height="300" rx="12" fill="url(#stepG)" opacity="0.7"/>
+    <rect x="1350" y="600" width="150" height="420" rx="12" fill="url(#stepG)" opacity="0.85"/>
+    <rect x="1520" y="450" width="150" height="570" rx="12" fill="url(#stepG)"/>
+    <g fill="#0f1115" opacity="0.22">
+      <rect x="1010" y="820" width="150" height="14" rx="7"/>
+      <rect x="1180" y="720" width="150" height="14" rx="7"/>
+      <rect x="1350" y="600" width="150" height="14" rx="7"/>
+      <rect x="1520" y="450" width="150" height="14" rx="7"/>
+    </g>
+  </g>
+
+  <!-- upward arrow of progress -->
+  <path d="M980 900 1090 786l88 60 96-128 92 58 108-166" stroke="#ffd166" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.65"/>
+  <path d="M1420 566l34-6-6 34" stroke="#ffd166" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.65"/>
+  </g>
+
+  <!-- graduate at the top -->
+  <g transform="translate(1715 300)" fill="#0f1115">
+    <circle cx="0" cy="0" r="34"/>
+    <path d="M-30 40h60l20 96h-38l-8 14h-8l-8-14h-38Z"/>
+    <path d="M-42 62 -96 6" stroke="#0f1115" stroke-width="16" stroke-linecap="round"/>
+    <path d="M42 62 96-14" stroke="#0f1115" stroke-width="16" stroke-linecap="round"/>
+    <g transform="translate(0 -46)">
+      <path d="M0-22 92 12 0 46-92 12Z"/>
+      <path d="M92 12v56" stroke="#ff5a1f" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="92" cy="74" r="9" fill="#ff5a1f"/>
+    </g>
+  </g>
+
+  <!-- certificate / scholarship card -->
+  <g transform="translate(1256 254)">
+    <rect x="14" y="18" width="330" height="230" rx="18" fill="#08090c" opacity="0.45"/>
+    <rect width="330" height="230" rx="18" fill="#fff6e8"/>
+    <g stroke="#c98a4b" stroke-width="8" stroke-linecap="round" opacity="0.5">
+      <path d="M40 62h180M40 104h250M40 146h210M40 188h140"/>
+    </g>
+    <circle cx="268" cy="176" r="38" fill="#ff5a1f"/>
+    <path d="M252 176l12 12 22-24" stroke="#fff6e8" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M250 210l-10 44 28-16 28 16-10-44Z" fill="#ff9a3c"/>
+  </g>
+
+  <!-- horizon glow -->
+  <path d="M0 1020h1920v60H0Z" fill="#08090c" opacity="0.8"/>
+  <rect width="1920" height="1080" fill="#0f1115" opacity="0.12"/>
+</svg>

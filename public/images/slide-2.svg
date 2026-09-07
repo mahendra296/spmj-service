@@ -1,22 +1,85 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="An open book with pages turning into letters and stacked textbooks">
   <defs>
-    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#0a3d62"/>
-      <stop offset="0.6" stop-color="#1e6091"/>
-      <stop offset="1" stop-color="#38b6c8"/>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1224"/>
+      <stop offset="0.55" stop-color="#2b1f4a"/>
+      <stop offset="1" stop-color="#5a2a2a"/>
     </linearGradient>
-    <radialGradient id="r2" cx="0.2" cy="0.3" r="0.6">
-      <stop offset="0" stop-color="#7fd8e6" stop-opacity="0.4"/>
-      <stop offset="1" stop-color="#7fd8e6" stop-opacity="0"/>
+    <radialGradient id="glow2" cx="0.72" cy="0.42" r="0.55">
+      <stop offset="0" stop-color="#ff9a3c" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff6e8"/>
+      <stop offset="1" stop-color="#f2d8b6"/>
+    </linearGradient>
+    <linearGradient id="pageR" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffefd8"/>
+      <stop offset="1" stop-color="#e8c79c"/>
+    </linearGradient>
   </defs>
-  <rect width="1920" height="1080" fill="url(#g2)"/>
-  <rect width="1920" height="1080" fill="url(#r2)"/>
-  <g opacity="0.16" stroke="#ffffff" stroke-width="1.5" fill="none">
-    <rect x="1200" y="200" width="280" height="280" rx="20" transform="rotate(15 1340 340)"/>
-    <rect x="1380" y="380" width="280" height="280" rx="20" transform="rotate(15 1520 520)"/>
-    <rect x="1560" y="560" width="280" height="280" rx="20" transform="rotate(15 1700 700)"/>
+
+  <rect width="1920" height="1080" fill="url(#bg2)"/>
+  <rect width="1920" height="1080" fill="url(#glow2)"/>
+
+  <!-- soft grid, like a ruled notebook -->
+  <g stroke="#ffffff" opacity="0.05">
+    <path d="M0 180h1920M0 300h1920M0 420h1920M0 540h1920M0 660h1920M0 780h1920M0 900h1920" stroke-width="1.5"/>
   </g>
-  <circle cx="280" cy="900" r="220" fill="#ffd166" opacity="0.12"/>
-  <path d="M0 760 Q480 620 960 760 T1920 760 L1920 1080 L0 1080 Z" fill="#0a3d62" opacity="0.55"/>
+
+  <!-- halo behind the book -->
+  <circle cx="1520" cy="560" r="340" fill="#ffd166" opacity="0.10"/>
+  <circle cx="1520" cy="560" r="230" fill="#ff9a3c" opacity="0.10"/>
+
+  <!-- open book -->
+  <g transform="translate(1520 590)">
+    <ellipse cx="0" cy="196" rx="382" ry="42" fill="#08090c" opacity="0.45"/>
+    <path d="M-16 24C-140-64-262-88-372-72v292c110-16 232 8 356 96Z" fill="url(#page)"/>
+    <path d="M16 24C140-64 262-88 372-72v292c-110-16-232 8-356 96Z" fill="url(#pageR)"/>
+    <path d="M-16 24c-8 4-14 10-16 18 2 8 8 14 16 18Zm32 0c8 4 14 10 16 18-2 8-8 14-16 18Z" fill="#c98a4b"/>
+    <rect x="-18" y="18" width="36" height="304" rx="10" fill="#ff5a1f"/>
+    <g stroke="#b98a5a" stroke-width="6" stroke-linecap="round" opacity="0.55">
+      <path d="M-330 12h250M-330 62h276M-330 112h250M-330 162h210"/>
+      <path d="M80 12h250M54 62h276M80 112h250M80 162h210"/>
+    </g>
+    <path d="M-372-72v292M372-72v292" stroke="#c98a4b" stroke-width="5" fill="none" opacity="0.5"/>
+  </g>
+
+  <!-- letters lifting off the page -->
+  <g transform="translate(200 96)" fill="#ffd166" font-family="Georgia, 'Times New Roman', serif" font-weight="700" opacity="0.9">
+    <text x="1146" y="252" font-size="76" opacity="0.9">A</text>
+    <text x="1284" y="188" font-size="58" opacity="0.75">b</text>
+    <text x="1406" y="236" font-size="86" opacity="0.85">C</text>
+    <text x="1552" y="170" font-size="52" opacity="0.6">1</text>
+    <text x="1632" y="252" font-size="66" opacity="0.7">2</text>
+    <text x="1012" y="330" font-size="46" opacity="0.5">?</text>
+  </g>
+  <g transform="translate(200 96)" stroke="#ffd166" stroke-width="2.5" fill="none" opacity="0.35" stroke-linecap="round" stroke-dasharray="10 14">
+    <path d="M1250 420c40-70 20-130 -60-176"/>
+    <path d="M1360 400c34-80 74-118 154-152"/>
+    <path d="M1440 424c60-58 130-72 208-56"/>
+  </g>
+
+  <!-- stack of books -->
+  <g transform="translate(1150 690)">
+    <rect x="0" y="120" width="330" height="42" rx="10" fill="#ff5a1f"/>
+    <rect x="16" y="72" width="298" height="42" rx="10" fill="#ffd166" opacity="0.9"/>
+    <rect x="40" y="24" width="266" height="42" rx="10" fill="#ff9a3c"/>
+    <g fill="#0f1115" opacity="0.35">
+      <rect x="26" y="136" width="60" height="10" rx="5"/>
+      <rect x="42" y="88" width="60" height="10" rx="5"/>
+      <rect x="66" y="40" width="60" height="10" rx="5"/>
+    </g>
+    <ellipse cx="165" cy="176" rx="200" ry="22" fill="#08090c" opacity="0.4"/>
+  </g>
+
+  <!-- graduation cap resting on the stack -->
+  <g transform="translate(1286 640)">
+    <path d="M0-24 118 16 0 56-118 16Z" fill="#0f1115"/>
+    <path d="M-62 32v42c0 18 124 18 124 0V32L0 56Z" fill="#1a1f3a"/>
+    <path d="M118 16v58" stroke="#ffd166" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="118" cy="80" r="10" fill="#ffd166"/>
+  </g>
+
+  <rect width="1920" height="1080" fill="#0f1115" opacity="0.1"/>
 </svg>

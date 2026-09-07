@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="A network of learning centres linked across a community, with hands joined at the centre">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="0.55" stop-color="#291d47"/>
+      <stop offset="1" stop-color="#5f2a22"/>
+    </linearGradient>
+    <radialGradient id="glow5" cx="0.7" cy="0.55" r="0.6">
+      <stop offset="0" stop-color="#ff9a3c" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="heart" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff9a3c"/>
+      <stop offset="1" stop-color="#ff5a1f"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg5)"/>
+  <rect width="1920" height="1080" fill="url(#glow5)"/>
+
+  <g transform="translate(1500 560) scale(0.86) translate(-1330 -560)">
+  <!-- concentric reach rings -->
+  <g fill="none" stroke="#ffd166" opacity="0.13">
+    <circle cx="1330" cy="560" r="180" stroke-width="2"/>
+    <circle cx="1330" cy="560" r="300" stroke-width="2"/>
+    <circle cx="1330" cy="560" r="420" stroke-width="1.5"/>
+    <circle cx="1330" cy="560" r="540" stroke-width="1.5"/>
+  </g>
+
+  <!-- network links -->
+  <g stroke="#ff9a3c" stroke-width="2.5" opacity="0.4" stroke-linecap="round">
+    <path d="M1330 560 1020 330M1330 560 1640 300M1330 560 1760 620M1330 560 1500 880M1330 560 1030 800M1330 560 900 560M1330 560 1180 200"/>
+  </g>
+  <g stroke="#ffd166" stroke-width="1.5" opacity="0.2" stroke-dasharray="8 12" fill="none">
+    <path d="M1020 330 1180 200 1640 300 1760 620 1500 880 1030 800 900 560Z"/>
+  </g>
+
+  <!-- centre pins -->
+  <g>
+    <g fill="#ffd166">
+      <g transform="translate(1020 330)"><path d="M0 0c-26 0-46 20-46 46 0 34 46 78 46 78s46-44 46-78C46 20 26 0 0 0Z" opacity="0.95"/><circle cx="0" cy="44" r="18" fill="#1a1f3a"/></g>
+      <g transform="translate(1640 300)"><path d="M0 0c-22 0-40 18-40 40 0 30 40 68 40 68s40-38 40-68c0-22-18-40-40-40Z" opacity="0.9"/><circle cx="0" cy="38" r="15" fill="#1a1f3a"/></g>
+      <g transform="translate(1760 620)"><path d="M0 0c-20 0-36 16-36 36 0 27 36 60 36 60s36-33 36-60c0-20-16-36-36-36Z" opacity="0.85"/><circle cx="0" cy="34" r="13" fill="#1a1f3a"/></g>
+      <g transform="translate(1500 880)"><path d="M0 0c-22 0-40 18-40 40 0 30 40 68 40 68s40-38 40-68c0-22-18-40-40-40Z" opacity="0.9"/><circle cx="0" cy="38" r="15" fill="#1a1f3a"/></g>
+      <g transform="translate(1030 800)"><path d="M0 0c-20 0-36 16-36 36 0 27 36 60 36 60s36-33 36-60c0-20-16-36-36-36Z" opacity="0.85"/><circle cx="0" cy="34" r="13" fill="#1a1f3a"/></g>
+      <g transform="translate(1180 200)"><path d="M0 0c-18 0-32 14-32 32 0 24 32 54 32 54s32-30 32-54c0-18-14-32-32-32Z" opacity="0.8"/><circle cx="0" cy="30" r="12" fill="#1a1f3a"/></g>
+      <g transform="translate(900 560)"><path d="M0 0c-18 0-32 14-32 32 0 24 32 54 32 54s32-30 32-54c0-18-14-32-32-32Z" opacity="0.8"/><circle cx="0" cy="30" r="12" fill="#1a1f3a"/></g>
+    </g>
+  </g>
+
+  <!-- hands joined around a heart -->
+  <g transform="translate(1330 560)">
+    <circle cx="0" cy="0" r="126" fill="#1a1f3a" opacity="0.85"/>
+    <circle cx="0" cy="0" r="126" fill="none" stroke="#ffd166" stroke-width="3" opacity="0.5"/>
+    <path d="M0 62c-56-38-88-68-88-104 0-26 20-46 46-46 18 0 32 9 42 24 10-15 24-24 42-24 26 0 46 20 46 46 0 36-32 66-88 104Z" fill="url(#heart)"/>
+    <g fill="#ffd166" opacity="0.9">
+      <path d="M-150 26c-14-12-16-30-4-40l38-32 16 18-30 26 46 40-24 24Z"/>
+      <path d="M150 26c14-12 16-30 4-40l-38-32-16 18 30 26-46 40 24 24Z"/>
+    </g>
+  </g>
+
+  </g>
+
+  <!-- people ring silhouettes -->
+  <g fill="#0f1115" opacity="0.9">
+    <g transform="translate(1180 806)"><circle cx="0" cy="0" r="30"/><path d="M-40 40h80c26 0 40 20 40 44v70h-160v-70c0-24 14-44 40-44Z"/></g>
+    <g transform="translate(1312 838)"><circle cx="0" cy="0" r="26"/><path d="M-34 34h68c22 0 34 18 34 38v58H-68v-58c0-20 12-38 34-38Z"/></g>
+    <g transform="translate(1436 812)"><circle cx="0" cy="0" r="28"/><path d="M-36 38h72c24 0 36 18 36 40v64H-72v-64c0-22 12-40 36-40Z"/></g>
+  </g>
+
+  <path d="M0 1004h1920v76H0Z" fill="#08090c" opacity="0.85"/>
+  <rect width="1920" height="1080" fill="#0f1115" opacity="0.1"/>
+</svg>

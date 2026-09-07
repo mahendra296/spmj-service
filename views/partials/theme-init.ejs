@@ -1,0 +1,19 @@
+<%
+/* Applies the stored colour mode to <html> before the page paints, so a
+   dark-mode visitor never sees a flash of the light palette. Keep this
+   inline (and in <head>) — an external file would load too late. */
+%>
+<script>
+  (function () {
+    var theme;
+    try {
+      var stored = localStorage.getItem('spmj-theme');
+      if (stored === 'light' || stored === 'dark') theme = stored;
+    } catch (e) { /* storage blocked */ }
+    if (!theme) {
+      // Nothing chosen yet — start from whatever the device prefers.
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>

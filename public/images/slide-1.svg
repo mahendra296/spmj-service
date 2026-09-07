@@ -1,18 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Sunrise over a learning centre with children walking to class">
   <defs>
-    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1a1f3a"/>
-      <stop offset="0.5" stop-color="#3d2c5e"/>
-      <stop offset="1" stop-color="#ff5a1f"/>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#0f1428"/>
+      <stop offset="0.45" stop-color="#2a2150"/>
+      <stop offset="0.78" stop-color="#7b3a2a"/>
+      <stop offset="1" stop-color="#ff7a2f"/>
     </linearGradient>
-    <radialGradient id="r1" cx="0.8" cy="0.2" r="0.6">
-      <stop offset="0" stop-color="#ff9a3c" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffd166" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#ff9a3c" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="hillA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1436"/>
+      <stop offset="1" stop-color="#0f1115"/>
+    </linearGradient>
+    <linearGradient id="hillB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f1115"/>
+      <stop offset="1" stop-color="#08090c"/>
+    </linearGradient>
   </defs>
-  <rect width="1920" height="1080" fill="url(#g1)"/>
-  <rect width="1920" height="1080" fill="url(#r1)"/>
-  <circle cx="1500" cy="280" r="380" fill="#ffd166" opacity="0.10"/>
-  <circle cx="320" cy="820" r="260" fill="#ff5a1f" opacity="0.18"/>
-  <path d="M0 720 Q480 580 960 720 T1920 720 L1920 1080 L0 1080 Z" fill="#0f1115" opacity="0.4"/>
+
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+
+  <!-- sun and halo -->
+  <circle cx="1370" cy="600" r="520" fill="url(#sun)"/>
+  <circle cx="1370" cy="600" r="132" fill="#ffd8a1" opacity="0.9"/>
+  <g stroke="#ffd166" stroke-width="3" opacity="0.22" stroke-linecap="round">
+    <path d="M1370 340v-110M1370 970v110M1090 600H980M1760 600h110M1172 402 1094 324M1568 798l78 78M1568 402l78-78M1172 798l-78 78"/>
+  </g>
+  <g fill="none" stroke="#ffb066" opacity="0.16">
+    <circle cx="1370" cy="600" r="210" stroke-width="2"/>
+    <circle cx="1370" cy="600" r="300" stroke-width="2"/>
+    <circle cx="1370" cy="600" r="400" stroke-width="1.5"/>
+  </g>
+
+  <!-- birds -->
+  <g stroke="#0f1115" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.55">
+    <path d="M1108 236c14-14 26-14 38 0 12-14 24-14 38 0"/>
+    <path d="M1236 178c11-11 21-11 30 0 9-11 19-11 30 0"/>
+    <path d="M1030 320c9-9 17-9 24 0 7-9 15-9 24 0"/>
+  </g>
+
+  <!-- far hills -->
+  <path d="M0 742q300-118 618-46 318 72 620-52 302-124 682-6v442H0Z" fill="url(#hillA)"/>
+
+  <!-- learning centre -->
+  <g transform="translate(1420 452)">
+    <rect x="0" y="150" width="430" height="252" fill="#0f1115"/>
+    <path d="M-34 150 215 40l249 110Z" fill="#0f1115"/>
+    <rect x="205" y="-38" width="6" height="80" fill="#0f1115"/>
+    <path d="M211-38h66l-20 22 20 22h-66Z" fill="#ff5a1f"/>
+    <g fill="#ffd166" opacity="0.85">
+      <rect x="46" y="206" width="62" height="66" rx="6"/>
+      <rect x="152" y="206" width="62" height="66" rx="6"/>
+      <rect x="258" y="206" width="62" height="66" rx="6"/>
+      <rect x="336" y="206" width="52" height="66" rx="6"/>
+    </g>
+    <rect x="176" y="306" width="86" height="96" rx="8" fill="#ff8c3a" opacity="0.9"/>
+  </g>
+
+  <!-- near hill -->
+  <path d="M0 838q380-96 742-24 362 72 700-30 178-54 478-16v312H0Z" fill="url(#hillB)"/>
+
+  <!-- children walking to school -->
+  <g fill="#08090c">
+    <g transform="translate(1150 700)">
+      <circle cx="0" cy="0" r="26"/>
+      <path d="M-24 30h48l14 96h-30l-8 84h-16l-14-84h-8Z"/>
+      <rect x="18" y="42" width="40" height="52" rx="8"/>
+    </g>
+    <g transform="translate(1252 728)">
+      <circle cx="0" cy="0" r="23"/>
+      <path d="M-22 26h44l12 88h-27l-7 76h-14l-13-76h-7Z"/>
+      <rect x="-58" y="40" width="38" height="46" rx="8"/>
+    </g>
+    <g transform="translate(1348 712)">
+      <circle cx="0" cy="0" r="25"/>
+      <path d="M-23 28h46l13 92h-29l-7 80h-15l-13-80h-8Z"/>
+      <rect x="16" y="40" width="38" height="50" rx="8"/>
+    </g>
+  </g>
+
+  <!-- ground glow -->
+  <path d="M0 1002h1920v78H0Z" fill="#08090c"/>
+  <rect width="1920" height="1080" fill="#0f1115" opacity="0.12"/>
 </svg>

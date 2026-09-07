@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="SPMJ Foundation — a non-profit bringing free, quality education to underprivileged children through schooling, digital learning, and scholarships." />
   <title><%= title %></title>
+  <link rel="icon" type="image/jpeg" href="/images/logo.jpeg" />
+  <link rel="apple-touch-icon" href="/images/logo.jpeg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css" />
+  <%- include('partials/theme-init') %>
 </head>
 <body data-page="<%= page %>">
   <%- include('header') %>
@@ -20,21 +23,40 @@
           <div class="container slide-content">
             <span class="eyebrow">Education · Equity · Opportunity</span>
             <h1 class="display">Every child deserves a <span class="grad">future</span>.</h1>
-            <p class="lead">SPMJ Foundation brings free, quality education to children who would otherwise be left behind.</p>
+            <p class="lead">SPMJ Foundation brings free, quality education to children who would otherwise be left behind — since 2018, more than 5,000 of them across 40 learning centres.</p>
+            <a href="/donate" class="btn btn-primary btn-lg">Donate now →</a>
           </div>
         </div>
         <div class="slide" style="background-image: url('/images/slide-2.svg')">
           <div class="container slide-content">
             <span class="eyebrow">Learning that lasts</span>
-            <h1 class="display">From the classroom to <span class="grad">confidence</span>.</h1>
-            <p class="lead">Schooling, after-school support, and mentoring that help first-generation learners stay in school and thrive.</p>
+            <h2 class="display">From the classroom to <span class="grad">confidence</span>.</h2>
+            <p class="lead">Free schooling, after-school support, meals, and mentoring that help first-generation learners stay in school — and stay ahead.</p>
+            <a href="/services" class="btn btn-primary btn-lg">Explore our programs →</a>
           </div>
         </div>
         <div class="slide" style="background-image: url('/images/slide-3.svg')">
           <div class="container slide-content">
             <span class="eyebrow">Skills for tomorrow</span>
-            <h1 class="display">Curious. Capable. <span class="grad">Ready.</span></h1>
-            <p class="lead">Digital and STEM labs that give every student the tools to learn, build, and dream bigger.</p>
+            <h2 class="display">Curious. Capable. <span class="grad">Ready.</span></h2>
+            <p class="lead">Digital and STEM labs where children code, build, and experiment — turning first-time computer users into confident problem solvers.</p>
+            <a href="/events" class="btn btn-primary btn-lg">Join a STEM camp →</a>
+          </div>
+        </div>
+        <div class="slide" style="background-image: url('/images/slide-4.svg')">
+          <div class="container slide-content">
+            <span class="eyebrow">Scholarships &amp; mentoring</span>
+            <h2 class="display">Talent is everywhere. <span class="grad">Opportunity</span> isn't.</h2>
+            <p class="lead">Our scholarships carry bright students past Class 10 and into college and careers — with a mentor beside them the whole way.</p>
+            <a href="/donate" class="btn btn-primary btn-lg">Sponsor a student →</a>
+          </div>
+        </div>
+        <div class="slide" style="background-image: url('/images/slide-5.svg')">
+          <div class="container slide-content">
+            <span class="eyebrow">Rooted in community</span>
+            <h2 class="display">Change that grows from <span class="grad">within</span>.</h2>
+            <p class="lead">Our teachers and volunteers come from the same neighbourhoods as our students — and every rupee you give is reported openly, down to the last receipt.</p>
+            <a href="/contact" class="btn btn-primary btn-lg">Volunteer with us →</a>
           </div>
         </div>
       </div>

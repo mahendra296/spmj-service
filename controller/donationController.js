@@ -10,6 +10,7 @@ import {
   getDonationStats,
   getAllDonations,
 } from "../service/donation-service.js";
+import { queueDonationReceipt } from "../service/mail-service.js";
 import { validateDonation } from "../validators/donation-validator.js";
 import {
   isPaymentsConfigured,
@@ -135,7 +136,14 @@ export const verifyPayment = async (req, res) => {
     // markDonationPaid returns undefined if it was already paid (e.g. the
     // webhook beat us to it) — that's still a success for the donor, so fall
     // back to looking the row up for its receipt.
-    if (!donation) donation = await getDonationByOrderId(orderId);
+    if (donation) {
+      // Only the path that actually flipped the row to `paid` emails the
+      // receipt, so this and the webhook can't both mail the same donor.
+      // Fire-and-forget: a mail failure must not fail a verified payment.
+      queueDonationReceipt(donation);
+    } else {
+      donation = await getDonationByOrderId(orderId);
+    }
     return res.json(
       ApiResponse.success(
         { redirect: `/donate/success?ref=${encodeURIComponent(donation?.receipt || "")}` },
@@ -225,7 +233,10 @@ export const handleWebhook = async (req, res) => {
 
     if (orderId) {
       if (event === "payment.captured" || event === "order.paid") {
-        await markDonationPaid(orderId, { paymentId: payment?.id });
+        const donation = await markDonationPaid(orderId, { paymentId: payment?.id });
+        // Undefined when the checkout callback already marked it paid (and
+        // already emailed) — see verifyPayment above.
+        if (donation) queueDonationReceipt(donation);
       } else if (event === "payment.failed") {
         await markDonationFailed(orderId, { paymentId: payment?.id });
       }
