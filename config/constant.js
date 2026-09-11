@@ -39,6 +39,13 @@ export const MEDIA_TYPES = ["image", "video"];
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 export const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
 
+// How many photos/videos can be attached to one gallery album in a single save.
+export const MAX_GALLERY_FILES = 20;
+
+// How many thumbnails are combined into an album's cover collage on the
+// public grid — the first one is large, the rest stack beside it.
+export const GALLERY_PREVIEW_COUNT = 3;
+
 // Pagination — items per page (chosen from the UI dropdown)
 export const DEFAULT_PAGE_SIZE = 5;
 export const PAGE_SIZE_OPTIONS = [5, 10, 25, 50];

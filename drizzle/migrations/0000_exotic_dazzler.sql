@@ -64,15 +64,29 @@ CREATE TABLE `events` (
 --> statement-breakpoint
 CREATE TABLE `gallery_items` (
 	`id` int AUTO_INCREMENT NOT NULL,
-	`title` varchar(255),
+	`title` varchar(255) NOT NULL,
+	`slug` varchar(280) NOT NULL,
 	`caption` varchar(500),
+	`description` text,
 	`media_type` enum('image','video') NOT NULL DEFAULT 'image',
 	`media_url` varchar(500) NOT NULL,
 	`event_id` int,
 	`created_by` int,
 	`created_at` timestamp NOT NULL DEFAULT (now()),
 	`updated_at` timestamp NOT NULL DEFAULT (now()),
-	CONSTRAINT `gallery_items_id` PRIMARY KEY(`id`)
+	CONSTRAINT `gallery_items_id` PRIMARY KEY(`id`),
+	CONSTRAINT `gallery_items_slug_unique` UNIQUE(`slug`)
+);
+--> statement-breakpoint
+CREATE TABLE `gallery_media` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`gallery_id` int NOT NULL,
+	`media_type` enum('image','video') NOT NULL DEFAULT 'image',
+	`media_url` varchar(500) NOT NULL,
+	`caption` varchar(500),
+	`sort_order` int NOT NULL DEFAULT 0,
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `gallery_media_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `refresh_tokens` (
@@ -102,4 +116,5 @@ ALTER TABLE `blog_posts` ADD CONSTRAINT `blog_posts_created_by_users_id_fk` FORE
 ALTER TABLE `events` ADD CONSTRAINT `events_created_by_users_id_fk` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `gallery_items` ADD CONSTRAINT `gallery_items_event_id_events_id_fk` FOREIGN KEY (`event_id`) REFERENCES `events`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `gallery_items` ADD CONSTRAINT `gallery_items_created_by_users_id_fk` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `gallery_media` ADD CONSTRAINT `gallery_media_gallery_id_gallery_items_id_fk` FOREIGN KEY (`gallery_id`) REFERENCES `gallery_items`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `refresh_tokens` ADD CONSTRAINT `refresh_tokens_user_id_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE cascade ON UPDATE no action;

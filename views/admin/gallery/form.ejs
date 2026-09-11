@@ -12,59 +12,102 @@
     <form action="<%= formAction %>" method="POST" enctype="multipart/form-data" class="contact-form">
       <div class="form-grid-2">
         <div class="form-row">
-          <label for="title">Title <span class="muted">(optional)</span></label>
-          <input type="text" id="title" name="title" value="<%= item.title || '' %>" />
+          <label for="title">Album title</label>
+          <input type="text" id="title" name="title" value="<%= item.title || '' %>" required maxlength="255" placeholder="e.g. Annual STEM Camp 2025" />
           <% if (errors && errors.title) { %><span class="error"><%= errors.title %></span><% } %>
         </div>
         <div class="form-row">
-          <label for="mediaType">Media type</label>
-          <select id="mediaType" name="mediaType" required>
-            <option value="image" <%= item.mediaType === 'image' || !item.mediaType ? 'selected' : '' %>>Photo</option>
-            <option value="video" <%= item.mediaType === 'video' ? 'selected' : '' %>>Video</option>
+          <label for="eventId">Link to event <span class="muted">(optional)</span></label>
+          <select id="eventId" name="eventId">
+            <option value="">— None —</option>
+            <% events.forEach((ev) => { %>
+              <option value="<%= ev.id %>" <%= String(item.eventId) === String(ev.id) ? 'selected' : '' %>><%= ev.title %></option>
+            <% }) %>
           </select>
-          <% if (errors && errors.mediaType) { %><span class="error"><%= errors.mediaType %></span><% } %>
         </div>
       </div>
 
       <div class="form-row">
-        <label for="caption">Caption <span class="muted">(optional)</span></label>
+        <label for="caption">Short caption <span class="muted">(optional — shown under the album on the grid)</span></label>
         <input type="text" id="caption" name="caption" value="<%= item.caption || '' %>" maxlength="500" />
         <% if (errors && errors.caption) { %><span class="error"><%= errors.caption %></span><% } %>
       </div>
 
       <div class="form-row">
-        <label for="mediaFile">Upload file <span class="muted">(photo or video, max 50MB)</span></label>
-        <input type="file" id="mediaFile" name="mediaFile" accept="image/*,video/*" />
-        <input type="hidden" name="existingMedia" value="<%= item.mediaUrl || '' %>" />
-        <% if (item.mediaUrl) { %>
-          <div class="form-preview">
-            <% if (item.mediaType === 'video' && item.mediaUrl.startsWith('/uploads/')) { %>
-              <video src="<%= item.mediaUrl %>" preload="metadata" muted></video>
-            <% } else if (item.mediaUrl.startsWith('/uploads/')) { %>
-              <img src="<%= item.mediaUrl %>" alt="Current media" />
-            <% } %>
-            <span class="muted">Current media is kept unless you upload a new file or enter a URL.</span>
+        <label for="description">Full description <span class="muted">(optional — shown on the album page; blank line starts a new paragraph)</span></label>
+        <textarea id="description" name="description" rows="6" maxlength="5000"><%= item.description || '' %></textarea>
+        <% if (errors && errors.description) { %><span class="error"><%= errors.description %></span><% } %>
+      </div>
+
+      <% if (media.length) { %>
+        <div class="form-row">
+          <label>Photos &amp; videos in this album <span class="muted">(<%= media.length %>) — the first one is the cover</span></label>
+          <div class="media-manager">
+            <% media.forEach((m, i) => { %>
+              <label class="media-tile">
+                <% if (m.mediaType === 'video') { %>
+                  <% if (m.mediaUrl.startsWith('/uploads/')) { %>
+                    <video src="<%= m.mediaUrl %>" preload="metadata" muted></video>
+                  <% } else { %>
+                    <span class="media-tile-placeholder">▶</span>
+                  <% } %>
+                <% } else { %>
+                  <img src="<%= m.mediaUrl %>" alt="" loading="lazy" />
+                <% } %>
+                <span class="media-type-tag"><%= m.mediaType === 'video' ? 'Video' : 'Photo' %></span>
+                <% if (i === 0) { %><span class="media-cover-tag">Cover</span><% } %>
+                <span class="media-tile-remove">
+                  <input type="checkbox" name="removeMedia" value="<%= m.id %>" />
+                  Remove
+                </span>
+              </label>
+            <% }) %>
           </div>
-        <% } %>
+          <span class="muted" style="font-size:.82rem;">Tick “Remove” on anything you want deleted, then save.</span>
+        </div>
+      <% } %>
+
+      <% if (pending.length) { %>
+        <div class="form-row">
+          <label>Waiting to be added <span class="muted">(<%= pending.length %>) — uploaded, but not saved yet</span></label>
+          <div class="media-manager">
+            <% pending.forEach((m) => { %>
+              <div class="media-tile">
+                <% if (m.mediaType === 'video') { %>
+                  <video src="<%= m.mediaUrl %>" preload="metadata" muted></video>
+                <% } else { %>
+                  <img src="<%= m.mediaUrl %>" alt="" loading="lazy" />
+                <% } %>
+                <span class="media-type-tag"><%= m.mediaType === 'video' ? 'Video' : 'Photo' %></span>
+                <input type="hidden" name="pendingMedia" value="<%= m.mediaType %>|<%= m.mediaUrl %>" />
+              </div>
+            <% }) %>
+          </div>
+          <span class="muted" style="font-size:.82rem;">These are kept for you — fix the errors above and save to attach them.</span>
+        </div>
+      <% } %>
+
+      <div class="form-row">
+        <label for="mediaFiles">Add photos or videos <span class="muted">(select several at once — up to <%= maxFiles %>, max 50MB each)</span></label>
+        <input type="file" id="mediaFiles" name="mediaFiles" accept="image/*,video/*" multiple />
+        <span class="muted" id="filePickCount" style="font-size:.82rem;"></span>
       </div>
 
       <div class="form-row">
-        <label for="mediaUrl">…or paste a media URL <span class="muted">(e.g. a YouTube link for video)</span></label>
-        <input type="url" id="mediaUrl" name="mediaUrl" value="<%= (item.mediaUrl && !item.mediaUrl.startsWith('/uploads/')) ? item.mediaUrl : '' %>" placeholder="https://…" />
-        <% if (errors && errors.mediaUrl) { %><span class="error"><%= errors.mediaUrl %></span><% } %>
+        <label for="mediaUrls">…or paste media URLs <span class="muted">(one per line, e.g. YouTube links)</span></label>
+        <textarea id="mediaUrls" name="mediaUrls" rows="3" placeholder="https://…&#10;https://…"><%= item.mediaUrls || '' %></textarea>
+        <% if (errors && errors.mediaUrls) { %><span class="error"><%= errors.mediaUrls %></span><% } %>
       </div>
 
       <div class="form-row">
-        <label for="eventId">Link to event <span class="muted">(optional)</span></label>
-        <select id="eventId" name="eventId">
-          <option value="">— None —</option>
-          <% events.forEach((ev) => { %>
-            <option value="<%= ev.id %>" <%= String(item.eventId) === String(ev.id) ? 'selected' : '' %>><%= ev.title %></option>
-          <% }) %>
+        <label for="urlMediaType">Pasted URLs are</label>
+        <select id="urlMediaType" name="urlMediaType">
+          <option value="image" <%= item.urlMediaType === 'video' ? '' : 'selected' %>>Photos</option>
+          <option value="video" <%= item.urlMediaType === 'video' ? 'selected' : '' %>>Videos</option>
         </select>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-lg">Save media</button>
+      <button type="submit" class="btn btn-primary btn-lg">Save album</button>
     </form>
   </div>
 

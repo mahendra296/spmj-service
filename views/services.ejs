@@ -41,31 +41,20 @@
           <div class="list-controls">
             <%- include('partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/services#gallery', pageSizeQuery: {} }) %>
           </div>
-          <div class="gallery-grid">
-            <% gallery.forEach((item) => { %>
-              <figure class="gallery-item">
-                <% if (item.mediaType === 'video') { %>
-                  <% if (item.mediaUrl.startsWith('/uploads/')) { %>
-                    <video controls preload="metadata" src="<%= item.mediaUrl %>"></video>
-                  <% } else { %>
-                    <div class="gallery-embed">
-                      <a href="<%= item.mediaUrl %>" target="_blank" rel="noopener noreferrer" class="gallery-play" aria-label="Play video">
-                        <span>▶</span>
-                        <small>Watch video</small>
-                      </a>
-                    </div>
-                  <% } %>
-                <% } else { %>
-                  <img src="<%= item.mediaUrl %>" alt="<%= item.title || item.caption || 'Gallery photo' %>" loading="lazy" />
-                <% } %>
-                <% if (item.title || item.caption || item.eventTitle) { %>
-                  <figcaption>
-                    <% if (item.title) { %><strong><%= item.title %></strong><% } %>
-                    <% if (item.caption) { %><span><%= item.caption %></span><% } %>
-                    <% if (item.eventTitle) { %><span class="gallery-tag"><%= item.eventTitle %></span><% } %>
-                  </figcaption>
-                <% } %>
-              </figure>
+          <div class="album-grid">
+            <% gallery.forEach((album) => { %>
+              <a class="album-card" href="/gallery/<%= album.slug %>">
+                <%- include('partials/album-collage', { album }) %>
+                <div class="album-body">
+                  <h3><%= album.title %></h3>
+                  <% if (album.caption) { %><p><%= album.caption %></p><% } %>
+                  <div class="album-meta">
+                    <span class="album-count"><%= album.mediaCount %> <%= album.mediaCount === 1 ? 'item' : 'items' %></span>
+                    <% if (album.eventTitle) { %><span class="gallery-tag"><%= album.eventTitle %></span><% } %>
+                  </div>
+                  <span class="link-arrow">View album →</span>
+                </div>
+              </a>
             <% }) %>
           </div>
           <%- include('partials/pagination', { pagination }) %>

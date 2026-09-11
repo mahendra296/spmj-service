@@ -1085,6 +1085,234 @@ ul { padding: 0; margin: 0; list-style: none; }
   border-radius: 999px;
 }
 
+/* ---------- Gallery albums (grid of albums -> one album page) ---------- */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.album-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  color: inherit;
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
+}
+.album-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+/* The combined preview: first photo large, the next two stacked beside it. */
+.album-collage {
+  display: grid;
+  gap: 3px;
+  aspect-ratio: 4 / 3;
+  background: var(--line);
+}
+.album-collage-1 { grid-template-columns: 1fr; }
+.album-collage-2 { grid-template-columns: 2fr 1fr; }
+.album-collage-3 {
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.album-collage-3 .album-frame:first-child { grid-row: span 2; }
+.album-frame {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+.album-frame img,
+.album-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .4s var(--ease);
+}
+.album-card:hover .album-frame img { transform: scale(1.04); }
+.album-frame-video {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--ink), #1c1f26);
+}
+.album-frame-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(15, 17, 21, .7);
+  color: #fff;
+  font-size: .7rem;
+  display: flex; align-items: center; justify-content: center;
+}
+/* "+4" over the last preview when the album holds more than we show. */
+.album-frame-more {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 17, 21, .55);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: .02em;
+}
+.album-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.album-body h3 { font-size: 1.1rem; margin: 0; }
+.album-body p {
+  margin: 0;
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.55;
+}
+.album-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.album-count {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+  color: var(--muted);
+}
+.album-body .link-arrow { margin-top: auto; }
+.album-head { margin: 16px 0 28px; }
+.album-head .content-meta { margin-top: 12px; }
+
+/* Photos on an album page open in the lightbox. */
+.gallery-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+/* ---------- Lightbox ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: rgba(10, 11, 14, .92);
+}
+.lightbox[hidden] { display: none; }
+.lightbox img {
+  max-width: 100%;
+  max-height: calc(100vh - 140px);
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+.lightbox-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, .82);
+  font-size: .9rem;
+  padding: 0 60px;
+}
+.lightbox-btn {
+  position: absolute;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .25);
+  background: rgba(255, 255, 255, .1);
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.lightbox-btn:hover { background: rgba(255, 255, 255, .2); }
+.lightbox-close { top: 20px; right: 20px; }
+.lightbox-prev { left: 20px; top: 50%; transform: translateY(-50%); }
+.lightbox-next { right: 20px; top: 50%; transform: translateY(-50%); }
+
+/* ---------- Admin: media manager on the album form ---------- */
+.media-manager {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.media-tile {
+  position: relative;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  cursor: pointer;
+}
+.media-tile img,
+.media-tile video,
+.media-tile-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+.media-tile-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--ink), #1c1f26);
+}
+.media-cover-tag {
+  position: absolute;
+  top: 8px; right: 8px;
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.media-tile-remove {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: .82rem;
+  font-weight: 500;
+  border-top: 1px solid var(--line);
+}
+.media-tile-remove input { width: 16px; height: 16px; accent-color: var(--danger-text); }
+/* A tile marked for removal dims, so the pending delete is obvious on save. */
+.media-tile:has(input:checked) { border-color: var(--danger-line); }
+.media-tile:has(input:checked) img,
+.media-tile:has(input:checked) video,
+.media-tile:has(input:checked) .media-tile-placeholder { opacity: .35; }
+
 /* ---------- Admin nav + lists + forms ---------- */
 .admin-nav {
   display: flex;
@@ -1306,6 +1534,7 @@ a.table-title:hover { color: var(--accent); }
 @media (max-width: 980px) {
   .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .album-grid { grid-template-columns: repeat(2, 1fr); }
   .admin-gallery-grid { grid-template-columns: repeat(3, 1fr); }
   .process { grid-template-columns: repeat(2, 1fr); }
   .two-col { grid-template-columns: 1fr; gap: 40px; }
@@ -1362,7 +1591,11 @@ a.table-title:hover { color: var(--accent); }
   .container { padding: 0 18px; }
   .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .gallery-grid { grid-template-columns: 1fr; }
+  .album-grid { grid-template-columns: 1fr; }
   .admin-gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .lightbox { padding: 20px 12px; }
+  .lightbox-prev { left: 8px; }
+  .lightbox-next { right: 8px; }
   .process { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
@@ -1704,6 +1937,7 @@ a.page-link:focus-visible {
 [data-theme="dark"] .site-footer a { color: var(--ink-soft); }
 /* Photography is shot for a light page; take a little glare off it. */
 [data-theme="dark"] .gallery-item img,
+[data-theme="dark"] .album-frame img,
 [data-theme="dark"] .content-card img { filter: brightness(.88); }
 
 /* ---------- Colour-mode toggle ---------- */

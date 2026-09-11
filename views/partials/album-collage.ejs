@@ -1,0 +1,26 @@
+<%
+  /* The album cover tile: the first photo large, the next two stacked beside
+     it. With a single item the collage collapses to one full-width frame, so
+     the layout is driven by how many previews there actually are. */
+  const previews = album.previewMedia || [];
+  const extra = (album.mediaCount || previews.length) - previews.length;
+%>
+<div class="album-collage album-collage-<%= Math.min(previews.length, 3) %>">
+  <% previews.forEach((m, i) => { %>
+    <figure class="album-frame">
+      <% if (m.mediaType === 'video') { %>
+        <% if (m.mediaUrl.startsWith('/uploads/')) { %>
+          <video src="<%= m.mediaUrl %>" preload="metadata" muted playsinline></video>
+        <% } else { %>
+          <span class="album-frame-video">▶</span>
+        <% } %>
+        <span class="album-frame-badge" aria-hidden="true">▶</span>
+      <% } else { %>
+        <img src="<%= m.mediaUrl %>" alt="<%= i === 0 ? album.title : '' %>" loading="lazy" />
+      <% } %>
+      <% if (i === previews.length - 1 && extra > 0) { %>
+        <span class="album-frame-more">+<%= extra %></span>
+      <% } %>
+    </figure>
+  <% }) %>
+</div>

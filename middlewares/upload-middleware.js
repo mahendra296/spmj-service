@@ -1,7 +1,11 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { MAX_IMAGE_SIZE, MAX_VIDEO_SIZE } from "../config/constant.js";
+import {
+  MAX_IMAGE_SIZE,
+  MAX_VIDEO_SIZE,
+  MAX_GALLERY_FILES,
+} from "../config/constant.js";
 import { env } from "../validators/env.js";
 
 const IMAGE_TYPES = [
@@ -55,12 +59,13 @@ export const uploadBlogCover = multer({
   limits: { fileSize: MAX_IMAGE_SIZE },
 }).single("coverImage");
 
-// Photo or video for the gallery.
+// Photos and videos for one gallery album — an album is a set, so this takes
+// a batch of files in a single save rather than one at a time.
 export const uploadGalleryMedia = multer({
   storage: makeStorage("gallery"),
   fileFilter: imageOrVideoFilter,
-  limits: { fileSize: MAX_VIDEO_SIZE },
-}).single("mediaFile");
+  limits: { fileSize: MAX_VIDEO_SIZE, files: MAX_GALLERY_FILES },
+}).array("mediaFiles", MAX_GALLERY_FILES);
 
 /**
  * Wrap a multer middleware so a file-too-large / wrong-type error becomes a

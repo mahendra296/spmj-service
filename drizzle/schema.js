@@ -96,14 +96,20 @@ export const blogPostsTable = mysqlTable("blog_posts", {
 });
 
 /**
- * Gallery — photos and videos from events/camps.
- * `mediaUrl` is either an uploaded file path (/uploads/gallery/...) or an
- * external URL (e.g. a YouTube link) for videos.
+ * Gallery albums — one row per album (an event shoot, a camp, a centre visit).
+ * The album itself carries the story (title, caption, description); the
+ * individual photos/videos live in `gallery_media`.
+ *
+ * `mediaType` / `mediaUrl` hold the album *cover* — a denormalised copy of its
+ * first media row, kept in sync by the service layer so list views can render
+ * a thumbnail without a second query.
  */
 export const galleryItemsTable = mysqlTable("gallery_items", {
   id: int("id").autoincrement().primaryKey(),
-  title: varchar("title", { length: 255 }),
+  title: varchar("title", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 280 }).notNull().unique(),
   caption: varchar("caption", { length: 500 }),
+  description: text("description"),
   mediaType: mysqlEnum("media_type", ["image", "video"])
     .default("image")
     .notNull(),
@@ -119,6 +125,25 @@ export const galleryItemsTable = mysqlTable("gallery_items", {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
+});
+
+/**
+ * The photos and videos inside an album. `mediaUrl` is either an uploaded file
+ * path (/uploads/gallery/...) or an external URL (e.g. a YouTube link).
+ * `sortOrder` fixes the display order; the lowest one is the album cover.
+ */
+export const galleryMediaTable = mysqlTable("gallery_media", {
+  id: int("id").autoincrement().primaryKey(),
+  galleryId: int("gallery_id")
+    .notNull()
+    .references(() => galleryItemsTable.id, { onDelete: "cascade" }),
+  mediaType: mysqlEnum("media_type", ["image", "video"])
+    .default("image")
+    .notNull(),
+  mediaUrl: varchar("media_url", { length: 500 }).notNull(),
+  caption: varchar("caption", { length: 500 }),
+  sortOrder: int("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 /**

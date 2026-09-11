@@ -91,21 +91,36 @@ const seedContent = async (adminId) => {
   }
 
   if ((await countGalleryItems()) === 0) {
-    await createGalleryItem({
-      title: "Learning centre, morning class",
-      caption: "Children at our main centre during a morning session.",
-      mediaType: "image",
-      mediaUrl: "/images/slide-1.svg",
-      createdBy: adminId,
-    });
-    await createGalleryItem({
-      title: "Digital lab in action",
-      caption: "Students exploring the coding station.",
-      mediaType: "image",
-      mediaUrl: "/images/slide-3.svg",
-      createdBy: adminId,
-    });
-    console.log("Seeded sample gallery items.");
+    // Each album holds several photos, so the public grid has something to
+    // combine into a collage tile.
+    await createGalleryItem(
+      {
+        title: "Learning centre, morning class",
+        caption: "Children at our main centre during a morning session.",
+        description:
+          "Our main centre runs two sessions a day. The morning group is the youngest — most of them are the first in their family to sit in a classroom.",
+        createdBy: adminId,
+      },
+      [
+        { mediaType: "image", mediaUrl: "/images/slide-1.svg" },
+        { mediaType: "image", mediaUrl: "/images/slide-2.svg" },
+        { mediaType: "image", mediaUrl: "/images/slide-4.svg" },
+      ]
+    );
+    await createGalleryItem(
+      {
+        title: "Digital lab in action",
+        caption: "Students exploring the coding station.",
+        description:
+          "The digital lab opens after school hours. Students rotate through the coding station in pairs, so every child gets time at a keyboard.",
+        createdBy: adminId,
+      },
+      [
+        { mediaType: "image", mediaUrl: "/images/slide-3.svg" },
+        { mediaType: "image", mediaUrl: "/images/slide-5.svg" },
+      ]
+    );
+    console.log("Seeded sample gallery albums.");
   }
 };
 

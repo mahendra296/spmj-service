@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="<%= album.caption || album.title %>" />
+  <title><%= title %></title>
+  <link rel="icon" type="image/jpeg" href="/images/logo.jpeg" />
+  <link rel="apple-touch-icon" href="/images/logo.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+  <%- include('partials/theme-init') %>
+</head>
+<body data-page="<%= page %>">
+  <%- include('header') %>
+
+  <main>
+    <section class="section article-page">
+      <div class="container">
+        <a href="/services#gallery" class="auth-back">← All albums</a>
+
+        <header class="album-head">
+          <span class="eyebrow">Gallery</span>
+          <h1 class="display" style="font-size:clamp(2rem,4.5vw,3.25rem);margin-top:8px;"><%= album.title %></h1>
+          <% if (album.caption) { %><p class="lead"><%= album.caption %></p><% } %>
+          <div class="content-meta">
+            <span><%= album.media.length %> <%= album.media.length === 1 ? 'item' : 'items' %></span>
+            <span>· <%= new Date(album.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+            <% if (album.eventTitle) { %>
+              <span>· <a href="/events/<%= album.eventSlug %>"><%= album.eventTitle %></a></span>
+            <% } %>
+          </div>
+        </header>
+
+        <% if (album.description) { %>
+          <div class="article-content article-narrow" style="margin:0 0 36px;">
+            <% album.description.split(/\n\n+/).forEach((para) => { %>
+              <p><%= para %></p>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <% if (album.media.length === 0) { %>
+          <p class="muted">This album is empty.</p>
+        <% } else { %>
+          <div class="gallery-grid">
+            <% album.media.forEach((m, i) => { %>
+              <figure class="gallery-item">
+                <% if (m.mediaType === 'video') { %>
+                  <% if (m.mediaUrl.startsWith('/uploads/')) { %>
+                    <video controls preload="metadata" src="<%= m.mediaUrl %>"></video>
+                  <% } else { %>
+                    <div class="gallery-embed">
+                      <a href="<%= m.mediaUrl %>" target="_blank" rel="noopener noreferrer" class="gallery-play" aria-label="Play video">
+                        <span>▶</span>
+                        <small>Watch video</small>
+                      </a>
+                    </div>
+                  <% } %>
+                <% } else { %>
+                  <button type="button" class="gallery-open" data-lightbox-src="<%= m.mediaUrl %>" data-lightbox-caption="<%= m.caption || '' %>" aria-label="Open photo <%= i + 1 %> full size">
+                    <img src="<%= m.mediaUrl %>" alt="<%= m.caption || album.title %>" loading="lazy" />
+                  </button>
+                <% } %>
+                <% if (m.caption) { %>
+                  <figcaption><span><%= m.caption %></span></figcaption>
+                <% } %>
+              </figure>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  </main>
+
+  <%- include('footer') %>
+  <script src="/script.js"></script>
+</body>
+</html>

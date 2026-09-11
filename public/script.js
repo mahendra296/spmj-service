@@ -83,6 +83,86 @@
     select.addEventListener('change', () => select.form.submit());
   });
 
+  /* ---------- Gallery lightbox (album pages) ---------- */
+  (function lightbox() {
+    const openers = Array.from(document.querySelectorAll('[data-lightbox-src]'));
+    if (!openers.length) return;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox';
+    overlay.hidden = true;
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.innerHTML =
+      '<button type="button" class="lightbox-btn lightbox-close" aria-label="Close">&times;</button>' +
+      '<button type="button" class="lightbox-btn lightbox-prev" aria-label="Previous photo">&#8249;</button>' +
+      '<img alt="" />' +
+      '<button type="button" class="lightbox-btn lightbox-next" aria-label="Next photo">&#8250;</button>' +
+      '<p class="lightbox-caption"></p>';
+    document.body.appendChild(overlay);
+
+    const img = overlay.querySelector('img');
+    const caption = overlay.querySelector('.lightbox-caption');
+    const prevBtn = overlay.querySelector('.lightbox-prev');
+    const nextBtn = overlay.querySelector('.lightbox-next');
+    const single = openers.length < 2;
+    prevBtn.hidden = single;
+    nextBtn.hidden = single;
+    let index = 0;
+
+    const show = (i) => {
+      index = (i + openers.length) % openers.length;
+      const opener = openers[index];
+      img.src = opener.dataset.lightboxSrc;
+      const text = opener.dataset.lightboxCaption || '';
+      caption.textContent = text;
+      img.alt = text;
+    };
+
+    const open = (i) => {
+      show(i);
+      overlay.hidden = false;
+      document.body.style.overflow = 'hidden';
+    };
+
+    const close = () => {
+      overlay.hidden = true;
+      img.src = '';
+      document.body.style.overflow = '';
+      openers[index].focus();
+    };
+
+    openers.forEach((opener, i) => {
+      opener.addEventListener('click', () => open(i));
+    });
+
+    overlay.querySelector('.lightbox-close').addEventListener('click', close);
+    prevBtn.addEventListener('click', () => show(index - 1));
+    nextBtn.addEventListener('click', () => show(index + 1));
+    // Clicking the backdrop (but not the photo or a button) closes it.
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (overlay.hidden) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowRight' && !single) show(index + 1);
+      else if (e.key === 'ArrowLeft' && !single) show(index - 1);
+    });
+  })();
+
+  /* ---------- Admin: how many files the album picker has queued ---------- */
+  (function filePickCount() {
+    const input = document.getElementById('mediaFiles');
+    const label = document.getElementById('filePickCount');
+    if (!input || !label) return;
+    input.addEventListener('change', () => {
+      const n = input.files.length;
+      label.textContent = n ? n + (n === 1 ? ' file selected' : ' files selected') : '';
+    });
+  })();
+
   /* ---------- Image slider ---------- */
   const slider = document.querySelector('.slider');
   if (slider) {

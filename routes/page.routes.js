@@ -25,10 +25,11 @@ router.get("/services", named("pub_get_services"), pageController.getServicesPag
 router.get("/events", named("pub_get_events"), eventController.getEventsPage);
 router.get("/events/:slug", named("pub_get_event"), eventController.getEventDetailPage);
 
-// Gallery now lives within the Programs page.
+// The album grid lives within the Programs page; each album gets its own page.
 router.get("/gallery", named("pub_get_gallery"), (req, res) =>
   res.redirect(301, "/services#gallery")
 );
+router.get("/gallery/:slug", named("pub_get_gallery_album"), galleryController.getGalleryDetailPage);
 
 router.get("/blog", named("pub_get_blog"), blogController.getBlogPage);
 router.get("/blog/:slug", named("pub_get_blog_post"), blogController.getBlogDetailPage);

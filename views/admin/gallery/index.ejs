@@ -3,25 +3,25 @@
     <div class="admin-list-head">
       <div>
         <span class="eyebrow">Gallery</span>
-        <h1>Manage media</h1>
+        <h1>Manage albums</h1>
       </div>
       <div class="admin-list-actions">
         <%- include('../../partials/page-size', { pageSize, pageSizeOptions, pageSizeBaseUrl: '/admin/gallery', pageSizeQuery: {} }) %>
-        <a href="/admin/gallery/new" class="btn btn-primary">+ Add media</a>
+        <a href="/admin/gallery/new" class="btn btn-primary">+ Add album</a>
       </div>
     </div>
 
     <div class="admin-panel">
       <% if (items.length === 0) { %>
-        <p class="muted">No media yet. <a href="/admin/gallery/new" class="link-arrow">Add the first photo or video →</a></p>
+        <p class="muted">No albums yet. <a href="/admin/gallery/new" class="link-arrow">Create the first album →</a></p>
       <% } else { %>
         <div class="table-scroll">
           <table class="data-table data-table-rich">
             <thead>
               <tr>
                 <th class="col-thumb"></th>
-                <th>Title</th>
-                <th>Type</th>
+                <th>Album</th>
+                <th>Items</th>
                 <th>Linked event</th>
                 <th>Added</th>
                 <th class="col-actions">Actions</th>
@@ -42,15 +42,17 @@
                       <img class="table-thumb" src="<%= item.mediaUrl %>" alt="" loading="lazy" />
                     <% } %>
                   </td>
-                  <td><span class="table-title"><%= item.title || 'Untitled' %></span></td>
                   <td>
-                    <% if (item.mediaType === 'video') { %><span class="badge badge-press">Video</span>
-                    <% } else { %><span class="badge badge-article">Photo</span><% } %>
+                    <a class="table-title" href="/gallery/<%= item.slug %>" target="_blank" rel="noopener"><%= item.title %></a>
+                    <% if (item.caption) { %><span class="muted"><%= item.caption %></span><% } %>
+                  </td>
+                  <td class="nowrap">
+                    <span class="badge badge-article"><%= item.mediaCount %> <%= item.mediaCount === 1 ? 'item' : 'items' %></span>
                   </td>
                   <td><%= item.eventTitle || '—' %></td>
                   <td class="nowrap"><%= new Date(item.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
                   <td class="col-actions">
-                    <%- include('../partials/row-actions', { editUrl: `/admin/gallery/${item.id}/edit`, deleteUrl: `/admin/gallery/${item.id}/delete`, confirmMsg: 'Delete this media?' }) %>
+                    <%- include('../partials/row-actions', { editUrl: `/admin/gallery/${item.id}/edit`, deleteUrl: `/admin/gallery/${item.id}/delete`, confirmMsg: 'Delete this album and everything in it?' }) %>
                   </td>
                 </tr>
               <% }) %>
